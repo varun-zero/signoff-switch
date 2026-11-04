@@ -25,9 +25,9 @@ import { BridgeRoomPanel } from './components/BridgeRoomPanel';
 import { ArtifactInspectorPanel, InspectorTab } from './components/ArtifactInspectorPanel';
 import { CliAndRepoView } from './components/CliAndRepoView';
 import { PlatformsAndAgentsGuideView } from './components/PlatformsAndAgentsGuideView';
-import { SignoffBrandLogo, VerticalEmblem } from './components/BrandLogos';
+import { DockerLogo, GitHubLogo, PythonLogo, SignoffBrandLogo, VerticalEmblem } from './components/BrandLogos';
 import { VisualPipelineFlow } from './components/VisualPipelineFlow';
-import { CheckCircle2, Download } from 'lucide-react';
+import { CheckCircle2, Download, FileSpreadsheet, Layers, Sparkles } from 'lucide-react';
 
 type MainWorkspaceView = 'workbench' | 'cli_repo' | 'platforms_guide' | 'build_plan_pdf';
 
@@ -217,7 +217,7 @@ export default function App() {
       };
     });
 
-    setBannerNotice('Human fix applied: 8/8 rules passed.');
+    setBannerNotice('Human fix approved: 8/8 deterministic rules verified.');
   };
 
   const handleResetVertical = () => {
@@ -379,29 +379,45 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#01010D] text-[#F4F3FF]">
-      {/* 3-Zone Top Bar */}
-      <header className="flex items-center justify-between gap-8 px-6 py-4 bg-[#01010D] border-b border-[#221E42] sticky top-0 z-30">
+    <div className="min-h-screen flex flex-col bg-[#02010A] text-[#F5F3FF]">
+      {/* Impeccable 3-Zone Top Navigation Bar */}
+      <header className="flex items-center justify-between gap-6 px-6 py-3.5 bg-[#050414] border-b border-[#201B42] sticky top-0 z-40 backdrop-blur-md">
         <a
           href="#top"
           onClick={(e) => {
             e.preventDefault();
             setActiveView('workbench');
           }}
-          className="flex items-center gap-3 text-xl font-bold tracking-tight text-[#F4F3FF] font-serif-display whitespace-nowrap shrink-0"
+          className="flex items-center gap-3 transition-opacity hover:opacity-90 shrink-0 cursor-pointer"
         >
-          <SignoffBrandLogo className="w-8 h-8" />
-          <span>Signoff</span>
+          <SignoffBrandLogo className="w-9 h-9" />
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold tracking-tight text-[#F5F3FF] font-serif-display leading-none">
+                Signoff
+              </span>
+              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-[#6331FB]/25 text-[#88F9C0] border border-[#6331FB]/50">
+                v2.0
+              </span>
+            </div>
+            <span className="text-xs font-mono text-[#958DBF] tracking-wide block mt-0.5">
+              Switch Compliance Room
+            </span>
+          </div>
         </a>
 
-        <nav aria-label="Primary Workspace Views" className="flex items-center gap-6 text-sm font-medium text-[#C2BCE8] overflow-x-auto">
+        {/* Center Nav: Segmented workspace pills */}
+        <nav
+          aria-label="Primary Workspace Views"
+          className="hidden md:flex items-center gap-1.5 p-1 bg-[#09081B] rounded-xl border border-[#201B42]"
+        >
           <button
             type="button"
             onClick={() => setActiveView('workbench')}
-            className={`py-1 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer ${
               activeView === 'workbench'
-                ? 'text-[#88F9C0] underline decoration-[#88F9C0] decoration-2 underline-offset-8 font-semibold'
-                : 'hover:text-[#F4F3FF]'
+                ? 'bg-[#6331FB] text-[#FFFFFF] shadow-sm font-semibold'
+                : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
             }`}
           >
             Compliance Room
@@ -409,10 +425,10 @@ export default function App() {
           <button
             type="button"
             onClick={() => setActiveView('cli_repo')}
-            className={`py-1 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer ${
               activeView === 'cli_repo'
-                ? 'text-[#88F9C0] underline decoration-[#88F9C0] decoration-2 underline-offset-8 font-semibold'
-                : 'hover:text-[#F4F3FF]'
+                ? 'bg-[#6331FB] text-[#FFFFFF] shadow-sm font-semibold'
+                : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
             }`}
           >
             CLI & Python Repo
@@ -420,10 +436,10 @@ export default function App() {
           <button
             type="button"
             onClick={() => setActiveView('platforms_guide')}
-            className={`py-1 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer ${
               activeView === 'platforms_guide'
-                ? 'text-[#88F9C0] underline decoration-[#88F9C0] decoration-2 underline-offset-8 font-semibold'
-                : 'hover:text-[#F4F3FF]'
+                ? 'bg-[#6331FB] text-[#FFFFFF] shadow-sm font-semibold'
+                : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
             }`}
           >
             Platforms & Providers
@@ -431,38 +447,45 @@ export default function App() {
           <button
             type="button"
             onClick={() => setActiveView('build_plan_pdf')}
-            className={`py-1 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer ${
               activeView === 'build_plan_pdf'
-                ? 'text-[#88F9C0] underline decoration-[#88F9C0] decoration-2 underline-offset-8 font-semibold'
-                : 'hover:text-[#F4F3FF]'
+                ? 'bg-[#6331FB] text-[#FFFFFF] shadow-sm font-semibold'
+                : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
             }`}
           >
             Build Plan PDF
           </button>
         </nav>
 
-        <div className="flex items-center shrink-0">
+        {/* Right CTA */}
+        <div className="flex items-center gap-3 shrink-0">
           <button
             type="button"
             onClick={handleSignOffAndExport}
-            className="px-4 py-2 text-sm font-semibold text-[#01010D] bg-[#88F9C0] rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            className="px-4 py-2 text-xs font-bold text-[#02010A] bg-[#00F5A0] hover:bg-[#28FFAE] rounded-xl transition-all active:scale-95 cursor-pointer flex items-center gap-2 whitespace-nowrap"
           >
-            Export Submission Pack
+            <Download className="w-4 h-4 text-[#02010A]" />
+            <span>Export Submission Pack</span>
           </button>
         </div>
       </header>
 
-      {/* Minimal Header Strip with Vertical Emblem Buttons */}
-      <section className="border-b border-[#221E42] px-6 py-5">
+      {/* Subheader Strip: Value Proposition & Colorful Vertical Buttons */}
+      <section className="border-b border-[#201B42] px-6 py-4 bg-[#050414]">
         <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <h1 className="text-2xl sm:text-3xl font-serif-display font-semibold text-[#F4F3FF]">
-            One engine. Three verticals. One human sign-off.
-          </h1>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-serif-display font-bold text-[#F5F3FF]">
+              One engine. Three verticals. One human sign-off.
+            </h1>
+            <p className="text-xs text-[#958DBF] mt-0.5">
+              Deterministic 8-rule gates across grant RFPs, defense bids, and enterprise valuation deals.
+            </p>
+          </div>
 
           <div
             role="group"
             aria-label="Select Compliance Vertical"
-            className="flex flex-wrap items-center gap-2.5"
+            className="flex flex-wrap items-center gap-2 p-1 bg-[#09081B] rounded-2xl border border-[#201B42]"
           >
             {(['grant', 'bid', 'deal'] as VerticalId[]).map((vId) => {
               const p = VERTICAL_PACKS[vId];
@@ -475,13 +498,17 @@ export default function App() {
                     setVertical(vId);
                     setBannerNotice(null);
                   }}
-                  className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2 cursor-pointer ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                     isSelected
-                      ? 'bg-[#6331FB] text-[#FFFFFF]'
-                      : 'bg-[#0A091A] text-[#C2BCE8] border border-[#221E42] hover:text-[#F4F3FF]'
+                      ? vId === 'grant'
+                        ? 'bg-[#062419] border border-[#10B981] text-[#88F9C0]'
+                        : vId === 'bid'
+                          ? 'bg-[#251605] border border-[#F59E0B] text-[#FCD34D]'
+                          : 'bg-[#140C2E] border border-[#8B5CF6] text-[#C084FC]'
+                      : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
                   }`}
                 >
-                  <VerticalEmblem vertical={vId} className="w-4 h-4" />
+                  <VerticalEmblem vertical={vId} className="w-5 h-5 shrink-0" />
                   <span>{p.name}</span>
                 </button>
               );
@@ -490,7 +517,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Interactive 5-Stage Visual Pipeline Flow */}
+      {/* Interactive 5-Stage Visual Pipeline Ribbon */}
       {activeView === 'workbench' && (
         <VisualPipelineFlow
           vertical={vertical}
@@ -508,20 +535,21 @@ export default function App() {
         />
       )}
 
+      {/* Notification Banner */}
       {bannerNotice && (
         <div
           role="status"
-          className="bg-[#0A091A] border-b border-[#6331FB] px-6 py-2.5 text-sm text-[#88F9C0]"
+          className="bg-[#050414] border-b border-[#00F5A0]/40 px-6 py-2.5 text-xs text-[#00F5A0] shadow-sm animate-fade-in"
         >
           <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
-              <span>{bannerNotice}</span>
+              <span className="font-medium">{bannerNotice}</span>
             </div>
             <button
               type="button"
               onClick={() => setBannerNotice(null)}
-              className="text-sm text-[#C2BCE8] hover:text-[#F4F3FF] cursor-pointer"
+              className="text-xs text-[#C5BFE9] hover:text-[#F5F3FF] cursor-pointer"
             >
               Dismiss
             </button>
@@ -529,10 +557,10 @@ export default function App() {
         </div>
       )}
 
-      {/* Main Content */}
+      {/* Main Workspace Grid */}
       <main className="flex-1 max-w-[1440px] w-full mx-auto px-6 py-8">
         {activeView === 'workbench' && (
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-start">
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
             <div className="xl:col-span-6">
               <BridgeRoomPanel
                 pack={currentPack}
@@ -592,20 +620,25 @@ export default function App() {
 
         {activeView === 'build_plan_pdf' && (
           <section aria-label="Signoff Build Plan PDF" className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#221E42]">
-              <h2 className="text-xl font-semibold text-[#F4F3FF]">
-                Build Plan PDF
-              </h2>
+            <div className="flex items-center justify-between pb-3 border-b border-[#201B42]">
+              <div>
+                <h2 className="text-xl font-bold font-serif-display text-[#F5F3FF]">
+                  Signoff Build Plan Architecture PDF
+                </h2>
+                <p className="text-xs text-[#958DBF]">
+                  Specification for multi-room Switch compliance and deterministic scoring
+                </p>
+              </div>
               <a
                 href="/assets/aistudio/Signoff-Build-Plan_fbb7e173.pdf"
                 download="Signoff-Build-Plan.pdf"
-                className="px-4 py-2 text-sm font-semibold bg-[#88F9C0] text-[#01010D] rounded-lg flex items-center gap-2"
+                className="px-4 py-2 text-xs font-bold bg-[#00F5A0] hover:bg-[#28FFAE] text-[#02010A] rounded-xl flex items-center gap-2 shadow-sm transition-all"
               >
                 <Download className="w-4 h-4" />
                 <span>Download PDF</span>
               </a>
             </div>
-            <div className="h-[760px] w-full rounded-xl overflow-hidden border border-[#221E42]">
+            <div className="h-[760px] w-full rounded-2xl overflow-hidden border border-[#201B42] bg-[#050414] shadow-2xl">
               <iframe
                 src="/assets/aistudio/Signoff-Build-Plan_fbb7e173.pdf"
                 title="Signoff Build Plan PDF"
@@ -616,10 +649,38 @@ export default function App() {
         )}
       </main>
 
-      <footer className="border-t border-[#221E42] px-6 py-5 text-sm text-[#C2BCE8]">
-        <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div>Signoff · Switch Compliance Room</div>
-          <div className="font-mono">github.com/varun2507027108-oss/signoff-switch</div>
+      {/* Impeccable Footer with Tech Badges */}
+      <footer className="border-t border-[#201B42] px-6 py-6 bg-[#050414] text-xs text-[#C5BFE9]">
+        <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <SignoffBrandLogo className="w-6 h-6" />
+            <div>
+              <span className="font-bold text-[#F5F3FF]">Signoff</span>
+              <span className="text-[#958DBF]"> · Autonomous Switch Compliance Gateway</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 text-xs font-mono text-[#958DBF]">
+            <div className="flex items-center gap-1.5">
+              <PythonLogo className="w-4 h-4" />
+              <span>Python 3.13</span>
+            </div>
+            <span>·</span>
+            <div className="flex items-center gap-1.5">
+              <DockerLogo className="w-4 h-4" />
+              <span>Docker Switch</span>
+            </div>
+            <span>·</span>
+            <a
+              href="https://github.com/varun-zero/signoff-switch"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-[#C5BFE9] hover:text-[#88F9C0] transition-colors"
+            >
+              <GitHubLogo className="w-4 h-4" />
+              <span>varun-zero/signoff-switch</span>
+            </a>
+          </div>
         </div>
       </footer>
     </div>

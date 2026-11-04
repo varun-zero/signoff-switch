@@ -11,9 +11,11 @@ import { VerticalPack } from '../engine/verticalsData';
 import { PlatformIcon, ProviderIcon } from './BrandLogos';
 import {
   CheckCircle2,
+  Lock,
   RotateCcw,
   Send,
   ShieldAlert,
+  Sparkles,
   UserCheck
 } from 'lucide-react';
 
@@ -39,18 +41,18 @@ interface BridgeRoomPanelProps {
   ) => PermissionCheckResult;
 }
 
-const BRIDGE_LABELS: Record<PlatformBridge, string> = {
-  discord: 'Discord',
-  slack: 'Slack',
-  teams: 'Teams',
-  telegram: 'Telegram'
+const BRIDGE_INFO: Record<PlatformBridge, { label: string; activeBorder: string; activeBg: string }> = {
+  discord: { label: 'Discord', activeBorder: 'border-[#5865F2]', activeBg: 'bg-[#5865F2]/20' },
+  slack: { label: 'Slack', activeBorder: 'border-[#36C5F0]', activeBg: 'bg-[#1E1C2E]' },
+  teams: { label: 'Teams', activeBorder: 'border-[#7B83EB]', activeBg: 'bg-[#505AC9]/20' },
+  telegram: { label: 'Telegram', activeBorder: 'border-[#2AABEE]', activeBg: 'bg-[#229ED9]/20' }
 };
 
-const PROVIDER_LABELS: Record<AgentProvider, string> = {
-  opencode: 'OpenCode',
-  antigravity: 'Antigravity',
-  claude: 'Claude',
-  codex: 'Codex'
+const PROVIDER_INFO: Record<AgentProvider, { label: string }> = {
+  opencode: { label: 'OpenCode' },
+  antigravity: { label: 'Antigravity' },
+  claude: { label: 'Claude' },
+  codex: { label: 'Codex' }
 };
 
 export const BridgeRoomPanel: React.FC<BridgeRoomPanelProps> = ({
@@ -98,65 +100,83 @@ export const BridgeRoomPanel: React.FC<BridgeRoomPanelProps> = ({
   };
 
   return (
-    <section aria-label="Live Switch Room" className="space-y-6">
-      {/* Header & Visual Logo Switchers */}
-      <div className="space-y-3 pb-4 border-b border-[#221E42]">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <PlatformIcon bridge={bridge} className="w-6 h-6 text-[#88F9C0]" />
-            <h2 className="text-xl font-semibold text-[#F4F3FF]">
-              {BRIDGE_LABELS[bridge]} Room
-            </h2>
+    <section
+      aria-label="Live Switch Room"
+      className="space-y-6"
+    >
+      {/* Top Header & Platform/Provider Switchers */}
+      <div className="space-y-4 pb-4 border-b border-[#201B42]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <PlatformIcon bridge={bridge} className="w-7 h-7" />
+            <div>
+              <div className="text-xs font-mono text-[#958DBF] uppercase tracking-wider">
+                Live Messaging Bridge
+              </div>
+              <h2 className="text-lg sm:text-xl font-bold font-serif-display text-[#F5F3FF]">
+                {BRIDGE_INFO[bridge].label} Compliance Room
+              </h2>
+            </div>
           </div>
 
-          {/* 4 Messaging Bridge Logo Buttons */}
-          <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Messaging Platform">
-            {(['discord', 'slack', 'teams', 'telegram'] as PlatformBridge[]).map((b) => (
-              <button
-                key={b}
-                type="button"
-                onClick={() => onSelectBridge(b)}
-                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
-                  bridge === b
-                    ? 'bg-[#6331FB] text-[#FFFFFF]'
-                    : 'text-[#C2BCE8] hover:text-[#F4F3FF]'
-                }`}
-              >
-                <PlatformIcon bridge={b} className="w-4 h-4" />
-                <span>{BRIDGE_LABELS[b]}</span>
-              </button>
-            ))}
+          {/* 4 Messaging Bridge Buttons */}
+          <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Messaging Platforms">
+            {(['discord', 'slack', 'teams', 'telegram'] as PlatformBridge[]).map((b) => {
+              const isSelected = bridge === b;
+              const info = BRIDGE_INFO[b];
+              return (
+                <button
+                  key={b}
+                  type="button"
+                  onClick={() => onSelectBridge(b)}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-2 cursor-pointer ${
+                    isSelected
+                      ? `${info.activeBg} ${info.activeBorder} border text-[#F5F3FF] font-semibold`
+                      : 'text-[#C5BFE9] hover:text-[#F5F3FF] bg-[#09081B] border border-[#201B42]'
+                  }`}
+                >
+                  <PlatformIcon bridge={b} className="w-4 h-4 shrink-0" />
+                  <span>{info.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* 4 Agent Harness Logo Buttons */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-          <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Agent Harness">
-            {(['opencode', 'antigravity', 'claude', 'codex'] as AgentProvider[]).map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => onSelectProvider(p)}
-                className={`px-3 py-1.5 text-sm font-mono rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
-                  provider === p
-                    ? 'bg-[#171436] text-[#88F9C0] font-semibold'
-                    : 'text-[#C2BCE8] hover:text-[#F4F3FF]'
-                }`}
-              >
-                <ProviderIcon provider={p} className="w-4 h-4" />
-                <span>{PROVIDER_LABELS[p]}</span>
-              </button>
-            ))}
+        {/* Second Row: Provider Selector & Room Filter */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Agent Harness Provider">
+            <span className="text-xs font-mono text-[#958DBF] mr-1 hidden sm:inline">Harness:</span>
+            {(['opencode', 'antigravity', 'claude', 'codex'] as AgentProvider[]).map((p) => {
+              const isSelected = provider === p;
+              const pInfo = PROVIDER_INFO[p];
+              return (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => onSelectProvider(p)}
+                  className={`px-2.5 py-1.5 text-xs rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer border ${
+                    isSelected
+                      ? 'bg-[#151139] border-[#6331FB] text-[#88F9C0] font-semibold'
+                      : 'bg-[#09081B] border-[#201B42] text-[#C5BFE9] hover:text-[#F5F3FF]'
+                  }`}
+                >
+                  <ProviderIcon provider={p} className="w-4 h-4 shrink-0" />
+                  <span className="font-mono">{pInfo.label}</span>
+                </button>
+              );
+            })}
           </div>
 
-          <div className="flex items-center gap-1.5">
+          {/* Room filter tabs */}
+          <div className="flex items-center gap-1">
             <button
               type="button"
               onClick={() => onSelectRoom('split')}
-              className={`px-2.5 py-1 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer font-medium ${
                 activeRoom === 'split'
                   ? 'bg-[#6331FB] text-[#FFFFFF]'
-                  : 'text-[#C2BCE8] hover:text-[#F4F3FF]'
+                  : 'text-[#C5BFE9] hover:text-[#F5F3FF]'
               }`}
             >
               All ({messages.length})
@@ -164,10 +184,10 @@ export const BridgeRoomPanel: React.FC<BridgeRoomPanelProps> = ({
             <button
               type="button"
               onClick={() => onSelectRoom('intake')}
-              className={`px-2.5 py-1 text-sm font-mono rounded-lg transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer font-mono ${
                 activeRoom === 'intake'
                   ? 'bg-[#6331FB] text-[#FFFFFF]'
-                  : 'text-[#C2BCE8] hover:text-[#F4F3FF]'
+                  : 'text-[#C5BFE9] hover:text-[#F5F3FF]'
               }`}
             >
               #{pack.intakeRoomName}
@@ -175,10 +195,10 @@ export const BridgeRoomPanel: React.FC<BridgeRoomPanelProps> = ({
             <button
               type="button"
               onClick={() => onSelectRoom('draft')}
-              className={`px-2.5 py-1 text-sm font-mono rounded-lg transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer font-mono ${
                 activeRoom === 'draft'
                   ? 'bg-[#6331FB] text-[#FFFFFF]'
-                  : 'text-[#C2BCE8] hover:text-[#F4F3FF]'
+                  : 'text-[#C5BFE9] hover:text-[#F5F3FF]'
               }`}
             >
               #{pack.draftRoomName}
@@ -187,18 +207,29 @@ export const BridgeRoomPanel: React.FC<BridgeRoomPanelProps> = ({
         </div>
       </div>
 
-      {/* Human Decision Gate Bar */}
-      <div className="py-3.5 border-b border-[#221E42] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <UserCheck className="w-6 h-6 text-[#88F9C0] shrink-0" />
+      {/* Human Decision Gate Status Strip (Divided, not a nested box) */}
+      <div className="py-3 border-b border-[#201B42] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="mt-0.5">
+            {isFixed ? (
+              <CheckCircle2 className="w-5 h-5 text-[#00F5A0]" />
+            ) : (
+              <UserCheck className="w-5 h-5 text-[#F59E0B]" />
+            )}
+          </div>
           <div>
-            <h3 className="text-base font-semibold text-[#88F9C0]">
-              {isFixed ? 'Ready for Human Sign-Off' : '2 Holds Caught by Reviewer'}
-            </h3>
-            <p className="text-sm text-[#D6D2F2] max-w-[46ch]">
+            <div className="flex items-center gap-2">
+              <h3 className={`text-sm font-bold ${isFixed ? 'text-[#88F9C0]' : 'text-[#F59E0B]'}`}>
+                {isFixed ? 'Stage 5: Ready for Human Sign-Off' : '2 Holds Caught by Deterministic Checker'}
+              </h3>
+              <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#1A1637] text-[#C5BFE9]">
+                {isFixed ? '8/8 Rules Passed' : '78/100 Initial'}
+              </span>
+            </div>
+            <p className="text-xs text-[#C5BFE9] mt-0.5 leading-relaxed max-w-[50ch]">
               {isFixed
-                ? 'Audit E7 attached + [E2] cited. 8/8 rules pass.'
-                : 'Missing audit file [E7] + uncited metric in Section 3.'}
+                ? 'Audited file [E7] attached & [E2] citation verified in Section 3. Submission pack ready.'
+                : 'Missing audit file [E7] + uncited metric in Section 3. Reviewer cannot release without approval.'}
             </p>
           </div>
         </div>
@@ -208,7 +239,7 @@ export const BridgeRoomPanel: React.FC<BridgeRoomPanelProps> = ({
             <button
               type="button"
               onClick={onApplyHumanFix}
-              className="px-4 py-2 text-sm font-semibold text-[#01010D] bg-[#88F9C0] hover:bg-[#72F5B2] rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              className="px-4 py-2 text-xs font-bold text-[#02010A] bg-[#00F5A0] hover:bg-[#28FFAE] rounded-lg transition-colors cursor-pointer whitespace-nowrap"
             >
               Approve Fix & Re-Run Checker
             </button>
@@ -217,17 +248,17 @@ export const BridgeRoomPanel: React.FC<BridgeRoomPanelProps> = ({
               <button
                 type="button"
                 onClick={onSignOffAndExport}
-                className="px-4 py-2 text-sm font-semibold text-[#01010D] bg-[#88F9C0] rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                className="px-4 py-2 text-xs font-bold text-[#02010A] bg-[#88F9C0] hover:bg-[#A3FED0] rounded-lg transition-colors cursor-pointer whitespace-nowrap"
               >
-                {isSignedOff ? 'Download Pack Again' : 'Sign Off & Export Pack'}
+                {isSignedOff ? 'Download Pack Again' : 'Sign Off & Export'}
               </button>
               <button
                 type="button"
                 onClick={onResetDemo}
-                className="px-3 py-2 text-sm font-medium text-[#D6D2F2] border border-[#2D2757] hover:border-[#6331FB] rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
-                aria-label="Reset demo to initial 78/100 catch"
+                className="px-2.5 py-2 text-xs font-medium text-[#C5BFE9] hover:text-[#F5F3FF] bg-[#09081B] border border-[#201B42] hover:border-[#6331FB] rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
+                title="Reset to initial state"
               >
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset</span>
               </button>
             </>
@@ -235,70 +266,103 @@ export const BridgeRoomPanel: React.FC<BridgeRoomPanelProps> = ({
         </div>
       </div>
 
-      {/* Visual Message Stream with Platform & Provider Logos */}
-      <div className="divide-y divide-[#1D1A39] border-t border-b border-[#221E42] max-h-[400px] overflow-y-auto">
-        {visibleMessages.map((msg) => {
-          const isAgent = msg.sender_id === 'analyst' || msg.sender_id === 'drafter' || msg.sender_id === 'reviewer';
-          return (
-            <div key={msg.id} className="py-3.5 flex items-start gap-3">
-              {isAgent ? (
-                <ProviderIcon provider={provider} className="w-5 h-5 text-[#88F9C0] shrink-0 mt-0.5" />
-              ) : (
-                <PlatformIcon bridge={bridge} className="w-5 h-5 text-[#6331FB] shrink-0 mt-0.5" />
-              )}
-              <div className="min-w-0 flex-1 space-y-1">
-                <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`font-semibold ${
-                        msg.sender_id === 'approver'
-                          ? 'text-[#88F9C0]'
-                          : msg.sender_id === 'client'
-                            ? 'text-[#F4F3FF]'
-                            : 'text-[#B8A7FF] font-mono'
-                      }`}
-                    >
-                      {msg.sender_name}
-                    </span>
-                    <span className="text-[#B8B2DE] font-mono">
-                      #{msg.room === 'intake' ? pack.intakeRoomName : pack.draftRoomName}
-                    </span>
-                    {msg.addressed_to && (
-                      <span className="text-[#88F9C0] font-mono">
-                        → {msg.addressed_to}
-                      </span>
-                    )}
-                  </div>
-                  <span className="font-mono text-sm text-[#B8B2DE] tabular-nums">
-                    {msg.timestamp}
-                  </span>
+      {/* Message Stream with Authentic Colorful Brand Badges */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-xs font-mono text-[#958DBF] pb-1 border-b border-[#201B42]">
+          <span>Bridge Stream · #{activeRoom === 'split' ? 'all-channels' : activeRoom === 'intake' ? pack.intakeRoomName : pack.draftRoomName}</span>
+          <span>{visibleMessages.length} Messages</span>
+        </div>
+
+        <div className="divide-y divide-[#1D193D] max-h-[400px] overflow-y-auto">
+          {visibleMessages.map((msg) => {
+            const isAgent = msg.sender_id === 'analyst' || msg.sender_id === 'drafter' || msg.sender_id === 'reviewer';
+            const isOwner = msg.sender_id === 'approver';
+            return (
+              <div
+                key={msg.id}
+                className={`py-3.5 flex items-start gap-3 transition-colors ${
+                  msg.is_human_gate ? 'bg-[#00F5A0]/5' : ''
+                }`}
+              >
+                {/* Colorful Brand Icon Avatar */}
+                <div className="shrink-0 mt-0.5">
+                  {isAgent ? (
+                    <ProviderIcon provider={provider} className="w-5 h-5" />
+                  ) : (
+                    <PlatformIcon bridge={bridge} className="w-5 h-5" />
+                  )}
                 </div>
 
-                <p className="text-sm text-[#E4E1FA] leading-relaxed max-w-[48ch]">
-                  {msg.content}
-                </p>
+                <div className="min-w-0 flex-1 space-y-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-xs font-bold ${
+                          isOwner
+                            ? 'text-[#88F9C0]'
+                            : isAgent
+                              ? 'text-[#C5BFE9] font-mono'
+                              : 'text-[#F5F3FF]'
+                        }`}
+                      >
+                        {msg.sender_name}
+                      </span>
+                      <span className="text-xs font-mono uppercase px-1.5 py-0.5 rounded bg-[#17133B] text-[#958DBF]">
+                        {msg.sender_badge}
+                      </span>
+                      <span className="text-xs text-[#958DBF] font-mono">
+                        #{msg.room === 'intake' ? pack.intakeRoomName : pack.draftRoomName}
+                      </span>
+                      {msg.addressed_to && (
+                        <span className="text-xs text-[#88F9C0] font-mono">
+                          → {msg.addressed_to}
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-mono text-xs text-[#958DBF] tabular-nums">
+                      {msg.timestamp}
+                    </span>
+                  </div>
+
+                  <p className="text-sm text-[#F5F3FF] leading-relaxed max-w-[65ch]">
+                    {msg.content}
+                  </p>
+
+                  {msg.artifact_ref && (
+                    <div className="inline-flex items-center gap-1.5 mt-1 px-2.5 py-1 rounded bg-[#130F30] text-xs font-mono text-[#88F9C0]">
+                      <Sparkles className="w-3.5 h-3.5 text-[#00F5A0]" />
+                      <span>{msg.artifact_ref}</span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      {/* Streamlined Permission & Message Tester */}
-      <form onSubmit={handleDispatch} className="space-y-3 pt-1">
-        <h3 className="text-base font-semibold text-[#F4F3FF]">
-          Test Switch Addressing Policy
-        </h3>
+      {/* Switch Addressing Policy & Interactive Message Tester */}
+      <form onSubmit={handleDispatch} className="space-y-3 pt-3 border-t border-[#201B42]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Lock className="w-4 h-4 text-[#6331FB]" />
+            <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-[#C5BFE9]">
+              Switch Addressing Policy Tester
+            </h3>
+          </div>
+          <span className="text-xs text-[#958DBF]">Simulate cross-agent wakeup permissions</span>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <div>
-            <label htmlFor="sim-actor" className="block text-sm text-[#C2BCE8] mb-1">
-              Sender
+            <label htmlFor="sim-actor" className="block text-xs font-mono text-[#958DBF] mb-1">
+              Sender Actor
             </label>
             <select
               id="sim-actor"
               value={senderActor}
               onChange={(e) => setSenderActor(e.target.value as ActorId)}
-              className="w-full text-sm bg-[#0A091A] border border-[#2D2757] rounded-lg px-3 py-2 text-[#F4F3FF]"
+              className="w-full text-xs bg-[#09081B] border border-[#201B42] rounded-lg px-2.5 py-2 text-[#F5F3FF]"
             >
               <option value="approver">Approver (Owner)</option>
               <option value="client">Client ({pack.persona.split(',')[0]})</option>
@@ -309,51 +373,51 @@ export const BridgeRoomPanel: React.FC<BridgeRoomPanelProps> = ({
           </div>
 
           <div>
-            <label htmlFor="sim-target" className="block text-sm text-[#C2BCE8] mb-1">
-              Wake Agent
+            <label htmlFor="sim-target" className="block text-xs font-mono text-[#958DBF] mb-1">
+              Target Wake Agent
             </label>
             <select
               id="sim-target"
               value={targetAgent}
               onChange={(e) => setTargetAgent(e.target.value as 'analyst' | 'drafter' | 'reviewer')}
-              className="w-full text-sm bg-[#0A091A] border border-[#2D2757] rounded-lg px-3 py-2 text-[#F4F3FF] font-mono"
+              className="w-full text-xs bg-[#09081B] border border-[#201B42] rounded-lg px-2.5 py-2 text-[#F5F3FF] font-mono"
             >
-              <option value="analyst">@analyst (anyone)</option>
-              <option value="drafter">@drafter (owner-agents)</option>
-              <option value="reviewer">@reviewer (owner)</option>
+              <option value="analyst">@analyst (public intake)</option>
+              <option value="drafter">@drafter (owner & agents)</option>
+              <option value="reviewer">@reviewer (owner only)</option>
             </select>
           </div>
 
           <div>
-            <label htmlFor="sim-room" className="block text-sm text-[#C2BCE8] mb-1">
-              Room
+            <label htmlFor="sim-room" className="block text-xs font-mono text-[#958DBF] mb-1">
+              Destination Room
             </label>
             <select
               id="sim-room"
               value={targetRoom}
               onChange={(e) => setTargetRoom(e.target.value as RoomKind)}
-              className="w-full text-sm bg-[#0A091A] border border-[#2D2757] rounded-lg px-3 py-2 text-[#F4F3FF] font-mono"
+              className="w-full text-xs bg-[#09081B] border border-[#201B42] rounded-lg px-2.5 py-2 text-[#F5F3FF] font-mono"
             >
-              <option value="intake">#{pack.intakeRoomName}</option>
-              <option value="draft">#{pack.draftRoomName}</option>
+              <option value="intake">#{pack.intakeRoomName} (Intake)</option>
+              <option value="draft">#{pack.draftRoomName} (Draft Room)</option>
             </select>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <input
             type="text"
             aria-label="Room message or instruction"
             value={customText}
             onChange={(e) => setCustomText(e.target.value)}
-            placeholder={`Message @signoff-${targetAgent}...`}
-            className="flex-1 text-sm bg-[#0A091A] border border-[#2D2757] rounded-lg px-3.5 py-2 text-[#F4F3FF] placeholder:text-[#A9A4C8]"
+            placeholder={`Message @signoff-${targetAgent} in #${targetRoom}...`}
+            className="flex-1 text-xs bg-[#09081B] border border-[#201B42] rounded-lg px-3 py-2 text-[#F5F3FF] placeholder:text-[#A9A2D0]"
           />
           <button
             type="submit"
-            className="px-4 py-2 text-sm font-semibold text-[#FFFFFF] bg-[#6331FB] hover:bg-[#5222E8] rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
+            className="px-4 py-2 text-xs font-semibold text-[#FFFFFF] bg-[#6331FB] hover:bg-[#7243FC] rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-3.5 h-3.5" />
             <span>Send</span>
           </button>
         </div>
@@ -361,14 +425,18 @@ export const BridgeRoomPanel: React.FC<BridgeRoomPanelProps> = ({
         {lastPermissionNotice && (
           <div
             role="status"
-            className="py-2 text-sm flex items-start gap-2.5 text-[#F4F3FF]"
+            className={`p-2.5 rounded-lg text-xs flex items-start gap-2 border ${
+              lastPermissionNotice.allowed
+                ? 'bg-[#00F5A0]/10 border-[#00F5A0]/30 text-[#88F9C0]'
+                : 'bg-[#EF4444]/10 border-[#EF4444]/30 text-[#FF8080]'
+            }`}
           >
             {lastPermissionNotice.allowed ? (
-              <CheckCircle2 className="w-4 h-4 text-[#88F9C0] shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-4 h-4 text-[#00F5A0] shrink-0 mt-0.5" />
             ) : (
-              <ShieldAlert className="w-4 h-4 text-[#FF8080] shrink-0 mt-0.5" />
+              <ShieldAlert className="w-4 h-4 text-[#EF4444] shrink-0 mt-0.5" />
             )}
-            <p className="max-w-[48ch]">{lastPermissionNotice.reason}</p>
+            <p className="leading-relaxed">{lastPermissionNotice.reason}</p>
           </div>
         )}
       </form>

@@ -2,42 +2,101 @@
 
 @layer base {
   :root {
-    --font-display: 'Bricolage Grotesque', sans-serif;
-    --font-sans: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-    --onyx: #01010D;
-    --indigo-electric: #6331FB;
-    --mint-tropical: #88F9C0;
+    --font-display: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    
+    /* Impeccable Semantic Color Tokens */
+    --canvas: #02010A;
+    --surface-1: #09081B;
+    --surface-2: #110F2B;
+    --surface-3: #19163F;
+    --border-subtle: #201B42;
+    --border-strong: #2F295E;
+    
+    --text-primary: #F5F3FF;
+    --text-secondary: #C5BFE9;
+    --text-muted: #958DBF;
+    
+    --accent-indigo: #6331FB;
+    --accent-indigo-hover: #7546FD;
+    --accent-mint: #88F9C0;
+    --accent-mint-bright: #00F5A0;
+    --accent-amber: #F59E0B;
+    --accent-coral: #EF4444;
+  }
+
+  * {
+    border-color: var(--border-subtle);
   }
 
   body {
     font-family: var(--font-sans);
     font-size: 15px;
     line-height: 1.55;
-    color: #F4F3FF;
-    background-color: #01010D;
-    caret-color: #88F9C0;
+    color: var(--text-primary);
+    background-color: var(--canvas);
+    caret-color: var(--accent-mint-bright);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, .font-serif-display {
+  /* Headings: Tight tracking, balanced wrap, deliberate visual hierarchy */
+  h1, h2, h3, h4, .font-serif-display {
     font-family: var(--font-display);
     text-wrap: balance;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+  }
+
+  h1 {
+    letter-spacing: -0.035em;
   }
 
   p {
-    max-width: 52ch;
     text-wrap: pretty;
   }
 
+  /* Code & Tabular Numerals */
   code, pre, .font-mono-tabular {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
   }
 
+  /* Theme browser surfaces per Impeccable craft floor */
+  ::selection {
+    background-color: var(--accent-mint);
+    color: #01010D;
+  }
+
   *:focus-visible {
-    outline: 2px solid #88F9C0;
+    outline: 2px solid var(--accent-mint);
     outline-offset: 2px;
+  }
+
+  /* Custom Impeccable Scrollbars */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #060515;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #251F49;
+    border-radius: 4px;
+    border: 2px solid #060515;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #41377C;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #251F49 #060515;
   }
 }
 
