@@ -1,25 +1,16 @@
 import React, { useState } from 'react';
 import {
+  Check,
   CheckCircle2,
   Circle,
-  Copy,
-  ExternalLink,
-  KeyRound,
-  MessageSquare,
-  Server,
-  Terminal
+  Copy
 } from 'lucide-react';
 import {
   AntigravityLogo,
   ClaudeLogo,
   CodexLogo,
   DiscordLogo,
-  DockerLogo,
-  GitHubLogo,
   OpenCodeLogo,
-  PlatformIcon,
-  ProviderIcon,
-  PythonLogo,
   SlackLogo,
   TeamsLogo,
   TelegramLogo
@@ -36,22 +27,22 @@ interface ChecklistItem {
 const INITIAL_CHECKLIST: ChecklistItem[] = [
   {
     id: 'chk-1',
-    title: '1. Start Switch Local Daemon & Mattermost',
+    title: '1. Start Switch local daemon & Mattermost bridge',
     detail: 'Boot the local Switch orchestrator container. Serves WebSocket gateway on port 8080.',
     code: 'docker compose -f switch-docker-compose.yaml up -d',
     done: false
   },
   {
     id: 'chk-2',
-    title: '2. Authenticate OpenCode & Agent Harnesses',
+    title: '2. Authenticate OpenCode & agent harnesses',
     detail: 'Log in via OpenCode CLI. Antigravity, Claude Code, and Codex CLI share the same config.',
     code: 'opencode auth login',
     done: false
   },
   {
     id: 'chk-3',
-    title: '3. Enable Discord Bot & Message Intent',
-    detail: 'Turn on Message Content Intent in Discord Developer Portal and paste Bot Token.',
+    title: '3. Enable Discord bot & message intent',
+    detail: 'Turn on Message Content Intent in Discord Developer Portal and paste bot token.',
     code: 'export DISCORD_BOT_TOKEN="your_discord_token"',
     done: false
   },
@@ -64,7 +55,7 @@ const INITIAL_CHECKLIST: ChecklistItem[] = [
   },
   {
     id: 'chk-5',
-    title: '5. Run Deterministic Checker & Export Pack',
+    title: '5. Run deterministic checker & export pack',
     detail: 'Run the 8-rule compliance gate and export docx submission package.',
     code: 'signoff demo --vertical grant --fix',
     done: false
@@ -90,283 +81,319 @@ export const PlatformsAndAgentsGuideView: React.FC = () => {
   const completedCount = checklist.filter((i) => i.done).length;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* Overview Intro Banner */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#0E0B2B] to-[#061814] border border-[#251F49] flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl">
-        <div className="space-y-1">
-          <div className="text-xs font-mono text-[#88F9C0] uppercase tracking-wider">
-            Architecture Blueprint
+      <div className="p-6 rounded-xl bg-[#151A21] border border-[#2A323E] flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
+        <div className="space-y-1.5">
+          <div className="text-xs font-mono text-[#8DA2FF]">
+            Architecture blueprint
           </div>
-          <h2 className="text-2xl font-bold font-serif-display text-[#F5F3FF]">
-            Multi-Platform Messaging & Multi-Agent Harnesses
+          <h2 className="text-xl font-semibold text-[#E6E9EF]">
+            Multi-platform messaging & agent harnesses
           </h2>
-          <p className="text-sm text-[#C5BFE9] max-w-[65ch] leading-relaxed">
+          <p className="text-sm text-[#A3ACBA] max-w-[65ch] leading-relaxed">
             One deterministic compliance engine powering Discord, Slack, Microsoft Teams, and Telegram. Switch bridges the rooms while your choice of OpenCode, Antigravity, Claude Code, or Codex runs the work.
           </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <div className="p-3 rounded-xl bg-[#050414] border border-[#201B42] text-center min-w-[100px]">
-            <div className="font-mono text-xl font-bold text-[#88F9C0] tabular-nums">
+          <div className="p-3 rounded-lg bg-[#1B212A] border border-[#2A323E] text-center min-w-[96px]">
+            <div className="font-mono text-xl font-semibold text-[#E6E9EF] tabular-nums">
               4
             </div>
-            <div className="text-xs font-mono text-[#958DBF] uppercase">Bridges</div>
+            <div className="text-xs text-[#7F8A9B]">Bridges</div>
           </div>
-          <div className="p-3 rounded-xl bg-[#050414] border border-[#201B42] text-center min-w-[100px]">
-            <div className="font-mono text-xl font-bold text-[#6331FB] tabular-nums">
+          <div className="p-3 rounded-lg bg-[#1B212A] border border-[#2A323E] text-center min-w-[96px]">
+            <div className="font-mono text-xl font-semibold text-[#8DA2FF] tabular-nums">
               4
             </div>
-            <div className="text-xs font-mono text-[#958DBF] uppercase">Harnesses</div>
+            <div className="text-xs text-[#7F8A9B]">Harnesses</div>
           </div>
-          <div className="p-3 rounded-xl bg-[#050414] border border-[#201B42] text-center min-w-[100px]">
-            <div className="font-mono text-xl font-bold text-[#00F5A0] tabular-nums">
+          <div className="p-3 rounded-lg bg-[#1B212A] border border-[#2A323E] text-center min-w-[96px]">
+            <div className="font-mono text-xl font-semibold text-[#6CC4A1] tabular-nums">
               8/8
             </div>
-            <div className="text-xs font-mono text-[#958DBF] uppercase">Rules</div>
+            <div className="text-xs text-[#7F8A9B]">Rules</div>
           </div>
         </div>
       </div>
 
       {/* Section 1: Agent Harnesses */}
-      <section aria-label="Agent Harnesses" className="space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-[#201B42]">
+      <section aria-label="Agent Harnesses" className="space-y-3">
+        <div className="flex items-center justify-between pb-3 border-b border-[#2A323E]">
           <div>
-            <h2 className="text-lg font-bold font-serif-display text-[#F5F3FF]">
-              1. Agent Harnesses (Configurable in `signoff.template.yaml`)
+            <h2 className="text-base font-semibold text-[#E6E9EF]">
+              1. Agent harnesses (configurable in signoff.template.yaml)
             </h2>
-            <p className="text-xs text-[#958DBF]">
+            <p className="text-xs text-[#7F8A9B]">
               Mix and match providers per agent role or use your existing team API keys
             </p>
           </div>
-          <span className="text-xs font-mono text-[#88F9C0]">4 Supported Runtimes</span>
+          <span className="text-xs font-mono text-[#8DA2FF]">4 supported runtimes</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* OpenCode */}
-          <div className="p-5 rounded-2xl border border-[#10B981]/40 bg-[#09081B] hover:border-[#10B981] transition-all space-y-3 shadow-lg">
+          <div className="p-4 rounded-xl border border-[#2A323E] bg-[#151A21] hover:border-[#8DA2FF]/40 transition-colors space-y-3">
             <div className="flex items-center justify-between">
-              <OpenCodeLogo className="w-8 h-8" />
-              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#10B981]/20 text-[#34D399]">
+              <OpenCodeLogo className="w-7 h-7" />
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-[#1B212A] text-[#A3ACBA] border border-[#2A323E]">
                 Default · Free
               </span>
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F5F3FF]">OpenCode CLI</h3>
-              <p className="text-xs text-[#C5BFE9] mt-0.5 leading-relaxed">
+              <h3 className="text-sm font-semibold text-[#E6E9EF]">OpenCode CLI</h3>
+              <p className="text-xs text-[#A3ACBA] mt-0.5 leading-relaxed">
                 Terminal-native open code assistant. Works out-of-the-box with local or cloud models.
               </p>
             </div>
-            <div className="p-2 rounded-lg bg-[#050414] border border-[#1A1637] font-mono text-xs text-[#88F9C0] flex items-center justify-between">
-              <span>opencode auth login</span>
+            <div className="p-2 rounded-md bg-[#10141B] border border-[#2A323E] font-mono text-xs text-[#E6E9EF] flex items-center justify-between">
+              <span className="truncate pr-2">opencode auth login</span>
               <button
                 type="button"
                 onClick={() => handleCopy('opencode auth login')}
-                className="text-[#958DBF] hover:text-[#F5F3FF] cursor-pointer"
+                className="text-[#7F8A9B] hover:text-[#E6E9EF] cursor-pointer shrink-0 transition-colors"
                 title="Copy command"
               >
-                <Copy className="w-3.5 h-3.5" />
+                {copiedCode === 'opencode auth login' ? (
+                  <Check className="w-3.5 h-3.5 text-[#6CC4A1]" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
 
           {/* Antigravity */}
-          <div className="p-5 rounded-2xl border border-[#4285F4]/40 bg-[#09081B] hover:border-[#4285F4] transition-all space-y-3 shadow-lg">
+          <div className="p-4 rounded-xl border border-[#2A323E] bg-[#151A21] hover:border-[#8DA2FF]/40 transition-colors space-y-3">
             <div className="flex items-center justify-between">
-              <AntigravityLogo className="w-8 h-8" />
-              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#4285F4]/20 text-[#8AB4F8]">
+              <AntigravityLogo className="w-7 h-7" />
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-[#1B212A] text-[#A3ACBA] border border-[#2A323E]">
                 Google AI Studio
               </span>
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F5F3FF]">Antigravity</h3>
-              <p className="text-xs text-[#C5BFE9] mt-0.5 leading-relaxed">
-                Google DeepMind & Gemini 2.5/3.0 harness. Superior long-context reasoning for large RFP packs.
+              <h3 className="text-sm font-semibold text-[#E6E9EF]">Antigravity</h3>
+              <p className="text-xs text-[#A3ACBA] mt-0.5 leading-relaxed">
+                Google DeepMind & Gemini harness. Superior long-context reasoning for large RFP packs.
               </p>
             </div>
-            <div className="p-2 rounded-lg bg-[#050414] border border-[#1A1637] font-mono text-xs text-[#88F9C0] flex items-center justify-between">
-              <span>GEMINI_API_KEY</span>
+            <div className="p-2 rounded-md bg-[#10141B] border border-[#2A323E] font-mono text-xs text-[#E6E9EF] flex items-center justify-between">
+              <span className="truncate pr-2">GEMINI_API_KEY</span>
               <button
                 type="button"
                 onClick={() => handleCopy('export GEMINI_API_KEY="your_gemini_key"')}
-                className="text-[#958DBF] hover:text-[#F5F3FF] cursor-pointer"
+                className="text-[#7F8A9B] hover:text-[#E6E9EF] cursor-pointer shrink-0 transition-colors"
                 title="Copy env var"
               >
-                <Copy className="w-3.5 h-3.5" />
+                {copiedCode === 'export GEMINI_API_KEY="your_gemini_key"' ? (
+                  <Check className="w-3.5 h-3.5 text-[#6CC4A1]" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
 
           {/* Claude Code */}
-          <div className="p-5 rounded-2xl border border-[#E27855]/40 bg-[#09081B] hover:border-[#E27855] transition-all space-y-3 shadow-lg">
+          <div className="p-4 rounded-xl border border-[#2A323E] bg-[#151A21] hover:border-[#8DA2FF]/40 transition-colors space-y-3">
             <div className="flex items-center justify-between">
-              <ClaudeLogo className="w-8 h-8" />
-              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#E27855]/20 text-[#E27855]">
+              <ClaudeLogo className="w-7 h-7" />
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-[#1B212A] text-[#A3ACBA] border border-[#2A323E]">
                 Anthropic
               </span>
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F5F3FF]">Claude Code</h3>
-              <p className="text-xs text-[#C5BFE9] mt-0.5 leading-relaxed">
+              <h3 className="text-sm font-semibold text-[#E6E9EF]">Claude Code</h3>
+              <p className="text-xs text-[#A3ACBA] mt-0.5 leading-relaxed">
                 Agentic terminal coding with Claude 3.7 Sonnet. Exceptional structured drafting and reasoning.
               </p>
             </div>
-            <div className="p-2 rounded-lg bg-[#050414] border border-[#1A1637] font-mono text-xs text-[#88F9C0] flex items-center justify-between">
-              <span>ANTHROPIC_API_KEY</span>
+            <div className="p-2 rounded-md bg-[#10141B] border border-[#2A323E] font-mono text-xs text-[#E6E9EF] flex items-center justify-between">
+              <span className="truncate pr-2">ANTHROPIC_API_KEY</span>
               <button
                 type="button"
                 onClick={() => handleCopy('export ANTHROPIC_API_KEY="your_anthropic_key"')}
-                className="text-[#958DBF] hover:text-[#F5F3FF] cursor-pointer"
+                className="text-[#7F8A9B] hover:text-[#E6E9EF] cursor-pointer shrink-0 transition-colors"
                 title="Copy env var"
               >
-                <Copy className="w-3.5 h-3.5" />
+                {copiedCode === 'export ANTHROPIC_API_KEY="your_anthropic_key"' ? (
+                  <Check className="w-3.5 h-3.5 text-[#6CC4A1]" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
 
           {/* Codex CLI */}
-          <div className="p-5 rounded-2xl border border-[#10A37E]/40 bg-[#09081B] hover:border-[#10A37E] transition-all space-y-3 shadow-lg">
+          <div className="p-4 rounded-xl border border-[#2A323E] bg-[#151A21] hover:border-[#8DA2FF]/40 transition-colors space-y-3">
             <div className="flex items-center justify-between">
-              <CodexLogo className="w-8 h-8" />
-              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#10A37E]/20 text-[#34D399]">
+              <CodexLogo className="w-7 h-7" />
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-[#1B212A] text-[#A3ACBA] border border-[#2A323E]">
                 OpenAI Agents
               </span>
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F5F3FF]">Codex CLI</h3>
-              <p className="text-xs text-[#C5BFE9] mt-0.5 leading-relaxed">
+              <h3 className="text-sm font-semibold text-[#E6E9EF]">Codex CLI</h3>
+              <p className="text-xs text-[#A3ACBA] mt-0.5 leading-relaxed">
                 OpenAI o3-mini and GPT-4o harness. High-speed JSON schema execution and matrix parsing.
               </p>
             </div>
-            <div className="p-2 rounded-lg bg-[#050414] border border-[#1A1637] font-mono text-xs text-[#88F9C0] flex items-center justify-between">
-              <span>OPENAI_API_KEY</span>
+            <div className="p-2 rounded-md bg-[#10141B] border border-[#2A323E] font-mono text-xs text-[#E6E9EF] flex items-center justify-between">
+              <span className="truncate pr-2">OPENAI_API_KEY</span>
               <button
                 type="button"
                 onClick={() => handleCopy('export OPENAI_API_KEY="your_openai_key"')}
-                className="text-[#958DBF] hover:text-[#F5F3FF] cursor-pointer"
+                className="text-[#7F8A9B] hover:text-[#E6E9EF] cursor-pointer shrink-0 transition-colors"
                 title="Copy env var"
               >
-                <Copy className="w-3.5 h-3.5" />
+                {copiedCode === 'export OPENAI_API_KEY="your_openai_key"' ? (
+                  <Check className="w-3.5 h-3.5 text-[#6CC4A1]" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Section 2: Messaging Bridges with Colorful Logos */}
-      <section aria-label="Messaging Bridges" className="space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-[#201B42]">
+      {/* Section 2: Messaging Bridges with Authentic Colorful Logos */}
+      <section aria-label="Messaging Bridges" className="space-y-3">
+        <div className="flex items-center justify-between pb-3 border-b border-[#2A323E]">
           <div>
-            <h2 className="text-lg font-bold font-serif-display text-[#F5F3FF]">
-              2. Messaging Bridges (Same 3 Agents in Every Workspace)
+            <h2 className="text-base font-semibold text-[#E6E9EF]">
+              2. Messaging bridges (same 3 agents in every workspace)
             </h2>
-            <p className="text-xs text-[#958DBF]">
+            <p className="text-xs text-[#7F8A9B]">
               Your team collaborates in their daily chat application; Switch bridges to the agent harnesses
             </p>
           </div>
-          <span className="text-xs font-mono text-[#88F9C0]">Switch 2.0 Gateway</span>
+          <span className="text-xs font-mono text-[#8DA2FF]">Switch 2.0 gateway</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Discord */}
-          <div className="p-5 rounded-2xl border border-[#5865F2]/40 bg-[#09081B] hover:border-[#5865F2] transition-all space-y-3 shadow-lg">
+          <div className="p-4 rounded-xl border border-[#2A323E] bg-[#151A21] hover:border-[#8DA2FF]/40 transition-colors space-y-3">
             <div className="flex items-center justify-between">
-              <DiscordLogo className="w-8 h-8" />
-              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#5865F2]/20 text-[#8896F8]">
+              <DiscordLogo className="w-7 h-7" />
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-[#1B212A] text-[#A3ACBA] border border-[#2A323E]">
                 Bot & Gateway
               </span>
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F5F3FF]">Discord</h3>
-              <p className="text-xs text-[#C5BFE9] mt-0.5 leading-relaxed">
+              <h3 className="text-sm font-semibold text-[#E6E9EF]">Discord</h3>
+              <p className="text-xs text-[#A3ACBA] mt-0.5 leading-relaxed">
                 Instant setup. Full slash command support, threads, and role-based permissions.
               </p>
             </div>
-            <div className="p-2 rounded-lg bg-[#050414] border border-[#1A1637] font-mono text-xs text-[#88F9C0] flex items-center justify-between">
-              <span>DISCORD_BOT_TOKEN</span>
+            <div className="p-2 rounded-md bg-[#10141B] border border-[#2A323E] font-mono text-xs text-[#E6E9EF] flex items-center justify-between">
+              <span className="truncate pr-2">DISCORD_BOT_TOKEN</span>
               <button
                 type="button"
                 onClick={() => handleCopy('export DISCORD_BOT_TOKEN="your_token"')}
-                className="text-[#958DBF] hover:text-[#F5F3FF] cursor-pointer"
+                className="text-[#7F8A9B] hover:text-[#E6E9EF] cursor-pointer shrink-0 transition-colors"
+                title="Copy token"
               >
-                <Copy className="w-3.5 h-3.5" />
+                {copiedCode === 'export DISCORD_BOT_TOKEN="your_token"' ? (
+                  <Check className="w-3.5 h-3.5 text-[#6CC4A1]" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
 
           {/* Slack */}
-          <div className="p-5 rounded-2xl border border-[#36C5F0]/40 bg-[#09081B] hover:border-[#36C5F0] transition-all space-y-3 shadow-lg">
+          <div className="p-4 rounded-xl border border-[#2A323E] bg-[#151A21] hover:border-[#8DA2FF]/40 transition-colors space-y-3">
             <div className="flex items-center justify-between">
-              <SlackLogo className="w-8 h-8" />
-              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#36C5F0]/20 text-[#36C5F0]">
+              <SlackLogo className="w-7 h-7" />
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-[#1B212A] text-[#A3ACBA] border border-[#2A323E]">
                 Socket Mode
               </span>
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F5F3FF]">Slack</h3>
-              <p className="text-xs text-[#C5BFE9] mt-0.5 leading-relaxed">
+              <h3 className="text-sm font-semibold text-[#E6E9EF]">Slack</h3>
+              <p className="text-xs text-[#A3ACBA] mt-0.5 leading-relaxed">
                 Enterprise ready. Uses WebSocket connection with no public ingress or open ports required.
               </p>
             </div>
-            <div className="p-2 rounded-lg bg-[#050414] border border-[#1A1637] font-mono text-xs text-[#88F9C0] flex items-center justify-between">
-              <span>SLACK_APP_TOKEN</span>
+            <div className="p-2 rounded-md bg-[#10141B] border border-[#2A323E] font-mono text-xs text-[#E6E9EF] flex items-center justify-between">
+              <span className="truncate pr-2">SLACK_APP_TOKEN</span>
               <button
                 type="button"
                 onClick={() => handleCopy('export SLACK_APP_TOKEN="xapp-..."')}
-                className="text-[#958DBF] hover:text-[#F5F3FF] cursor-pointer"
+                className="text-[#7F8A9B] hover:text-[#E6E9EF] cursor-pointer shrink-0 transition-colors"
+                title="Copy token"
               >
-                <Copy className="w-3.5 h-3.5" />
+                {copiedCode === 'export SLACK_APP_TOKEN="xapp-..."' ? (
+                  <Check className="w-3.5 h-3.5 text-[#6CC4A1]" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
 
           {/* Teams */}
-          <div className="p-5 rounded-2xl border border-[#7B83EB]/40 bg-[#09081B] hover:border-[#7B83EB] transition-all space-y-3 shadow-lg">
+          <div className="p-4 rounded-xl border border-[#2A323E] bg-[#151A21] hover:border-[#8DA2FF]/40 transition-colors space-y-3">
             <div className="flex items-center justify-between">
-              <TeamsLogo className="w-8 h-8" />
-              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#7B83EB]/20 text-[#A5ABF9]">
+              <TeamsLogo className="w-7 h-7" />
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-[#1B212A] text-[#A3ACBA] border border-[#2A323E]">
                 M365 App
               </span>
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F5F3FF]">Microsoft Teams</h3>
-              <p className="text-xs text-[#C5BFE9] mt-0.5 leading-relaxed">
+              <h3 className="text-sm font-semibold text-[#E6E9EF]">Microsoft Teams</h3>
+              <p className="text-xs text-[#A3ACBA] mt-0.5 leading-relaxed">
                 Connects to Azure Bot Framework & Microsoft 365 developer tenant for corporate proposals.
               </p>
             </div>
-            <div className="p-2 rounded-lg bg-[#050414] border border-[#1A1637] font-mono text-xs text-[#88F9C0] flex items-center justify-between">
-              <span>APP_ID + SECRET</span>
+            <div className="p-2 rounded-md bg-[#10141B] border border-[#2A323E] font-mono text-xs text-[#E6E9EF] flex items-center justify-between">
+              <span className="truncate pr-2">APP_ID + SECRET</span>
               <button
                 type="button"
                 onClick={() => handleCopy('export TEAMS_APP_ID="guid"')}
-                className="text-[#958DBF] hover:text-[#F5F3FF] cursor-pointer"
+                className="text-[#7F8A9B] hover:text-[#E6E9EF] cursor-pointer shrink-0 transition-colors"
+                title="Copy credentials"
               >
-                <Copy className="w-3.5 h-3.5" />
+                {copiedCode === 'export TEAMS_APP_ID="guid"' ? (
+                  <Check className="w-3.5 h-3.5 text-[#6CC4A1]" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
 
           {/* Telegram */}
-          <div className="p-5 rounded-2xl border border-[#2AABEE]/40 bg-[#09081B] hover:border-[#2AABEE] transition-all space-y-3 shadow-lg">
+          <div className="p-4 rounded-xl border border-[#2A323E] bg-[#151A21] hover:border-[#8DA2FF]/40 transition-colors space-y-3">
             <div className="flex items-center justify-between">
-              <TelegramLogo className="w-8 h-8" />
-              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#2AABEE]/20 text-[#60CDFF]">
+              <TelegramLogo className="w-7 h-7" />
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-[#1B212A] text-[#A3ACBA] border border-[#2A323E]">
                 @BotFather
               </span>
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#F5F3FF]">Telegram</h3>
-              <p className="text-xs text-[#C5BFE9] mt-0.5 leading-relaxed">
+              <h3 className="text-sm font-semibold text-[#E6E9EF]">Telegram</h3>
+              <p className="text-xs text-[#A3ACBA] mt-0.5 leading-relaxed">
                 Mobile-first rapid sign-offs. Executives can approve proposals directly from Telegram chats.
               </p>
             </div>
-            <div className="p-2 rounded-lg bg-[#050414] border border-[#1A1637] font-mono text-xs text-[#88F9C0] flex items-center justify-between">
-              <span>TELEGRAM_BOT_TOKEN</span>
+            <div className="p-2 rounded-md bg-[#10141B] border border-[#2A323E] font-mono text-xs text-[#E6E9EF] flex items-center justify-between">
+              <span className="truncate pr-2">TELEGRAM_BOT_TOKEN</span>
               <button
                 type="button"
                 onClick={() => handleCopy('export TELEGRAM_BOT_TOKEN="token"')}
-                className="text-[#958DBF] hover:text-[#F5F3FF] cursor-pointer"
+                className="text-[#7F8A9B] hover:text-[#E6E9EF] cursor-pointer shrink-0 transition-colors"
+                title="Copy token"
               >
-                <Copy className="w-3.5 h-3.5" />
+                {copiedCode === 'export TELEGRAM_BOT_TOKEN="token"' ? (
+                  <Check className="w-3.5 h-3.5 text-[#6CC4A1]" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
@@ -374,34 +401,34 @@ export const PlatformsAndAgentsGuideView: React.FC = () => {
       </section>
 
       {/* Section 3: Interactive 5-Step Setup Checklist */}
-      <section aria-label="Human Setup Checklist" className="space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-[#201B42]">
+      <section aria-label="Human Setup Checklist" className="space-y-3">
+        <div className="flex items-center justify-between pb-3 border-b border-[#2A323E]">
           <div>
-            <h2 className="text-lg font-bold font-serif-display text-[#F5F3FF]">
-              3. Interactive Setup Checklist
+            <h2 className="text-base font-semibold text-[#E6E9EF]">
+              3. Interactive setup checklist
             </h2>
-            <p className="text-xs text-[#958DBF]">
+            <p className="text-xs text-[#7F8A9B]">
               Follow these 5 steps to run the complete end-to-end stack locally
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-[#88F9C0]">
-              {completedCount}/5 Completed
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono text-[#A3ACBA] tabular-nums">
+              {completedCount}/5 completed
             </span>
-            <div className="w-20 h-2 bg-[#120F2E] rounded-full overflow-hidden">
+            <div className="w-24 h-1.5 bg-[#1B212A] rounded-full overflow-hidden border border-[#2A323E]">
               <div
-                className="h-full bg-[#00F5A0] transition-all duration-300"
+                className="h-full bg-[#6CC4A1] transition-all duration-300"
                 style={{ width: `${(completedCount / 5) * 100}%` }}
               />
             </div>
           </div>
         </div>
 
-        <div className="divide-y divide-[#181436] rounded-2xl border border-[#201B42] bg-[#09081B] overflow-hidden">
+        <div className="divide-y divide-[#2A323E] rounded-xl border border-[#2A323E] bg-[#151A21] overflow-hidden">
           {checklist.map((item) => (
             <div
               key={item.id}
-              className={`p-4 transition-colors ${item.done ? 'bg-[#00F5A0]/5' : 'hover:bg-[#0E0C26]'}`}
+              className={`p-4 transition-colors ${item.done ? 'bg-[#151A21]/50' : 'hover:bg-[#1B212A]/40'}`}
             >
               <div className="flex items-start gap-3.5">
                 <button
@@ -411,34 +438,43 @@ export const PlatformsAndAgentsGuideView: React.FC = () => {
                   aria-label={`Toggle ${item.title}`}
                 >
                   {item.done ? (
-                    <CheckCircle2 className="w-5 h-5 text-[#00F5A0]" />
+                    <CheckCircle2 className="w-4 h-4 text-[#6CC4A1]" />
                   ) : (
-                    <Circle className="w-5 h-5 text-[#6331FB] hover:text-[#88F9C0]" />
+                    <Circle className="w-4 h-4 text-[#7F8A9B] hover:text-[#8DA2FF]" />
                   )}
                 </button>
 
                 <div className="min-w-0 flex-1 space-y-1.5">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className={`text-sm font-bold ${item.done ? 'text-[#88F9C0] line-through' : 'text-[#F5F3FF]'}`}>
+                    <span className={`text-sm font-medium ${item.done ? 'text-[#7F8A9B] line-through' : 'text-[#E6E9EF]'}`}>
                       {item.title}
                     </span>
                     {item.code && (
                       <button
                         type="button"
                         onClick={() => handleCopy(item.code!)}
-                        className="text-xs font-mono text-[#958DBF] hover:text-[#88F9C0] flex items-center gap-1 cursor-pointer"
+                        className="text-xs font-mono text-[#7F8A9B] hover:text-[#E6E9EF] flex items-center gap-1 cursor-pointer transition-colors"
                       >
-                        <Copy className="w-3 h-3" />
-                        <span>Copy Code</span>
+                        {copiedCode === item.code ? (
+                          <>
+                            <Check className="w-3 h-3 text-[#6CC4A1]" />
+                            <span className="text-[#6CC4A1]">Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy code</span>
+                          </>
+                        )}
                       </button>
                     )}
                   </div>
-                  <p className="text-xs text-[#C5BFE9] max-w-[65ch] leading-relaxed">
+                  <p className="text-xs text-[#A3ACBA] max-w-[65ch] leading-relaxed">
                     {item.detail}
                   </p>
 
                   {item.code && (
-                    <pre className="text-xs font-mono bg-[#050414] p-2.5 rounded-lg border border-[#1A1637] text-[#88F9C0] overflow-x-auto">
+                    <pre className="text-xs font-mono bg-[#10141B] p-2.5 rounded-md border border-[#2A323E] text-[#E6E9EF] overflow-x-auto">
                       <code>{item.code}</code>
                     </pre>
                   )}

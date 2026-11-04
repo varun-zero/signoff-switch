@@ -8,7 +8,7 @@ import {
   renderComplianceMatrixCsv
 } from '../engine/signoffEngine';
 import { VerticalPack } from '../engine/verticalsData';
-import { Check, Copy, Download, FileCode, Play, Terminal } from 'lucide-react';
+import { Check, Copy, Download, FileCode, Terminal } from 'lucide-react';
 import { GitHubLogo, PythonLogo } from './BrandLogos';
 
 interface CliAndRepoViewProps {
@@ -97,31 +97,29 @@ export const CliAndRepoView: React.FC<CliAndRepoViewProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
       {/* Left 5 Cols: CLI Runner */}
       <section
         aria-label="CLI Toolbelt"
-        className="lg:col-span-5 bg-[#09081B] border border-[#201B42] rounded-2xl p-5 lg:p-6 shadow-xl space-y-5"
+        className="lg:col-span-5 bg-[#151A21] border border-[#2A323E] rounded-xl p-5 space-y-4 shadow-sm"
       >
-        <div className="flex items-center justify-between pb-3 border-b border-[#1A1637]">
+        <div className="flex items-center justify-between pb-3 border-b border-[#2A323E]">
           <div className="flex items-center gap-3">
-            <PythonLogo className="w-6 h-6 shrink-0" />
+            <PythonLogo className="w-5 h-5 shrink-0" />
             <div>
-              <div className="text-xs font-mono text-[#958DBF] uppercase tracking-wider">
-                Native Toolbelt
-              </div>
-              <h2 className="text-lg font-bold font-serif-display text-[#F5F3FF]">
+              <div className="text-xs text-[#7F8A9B]">Native toolbelt</div>
+              <h2 className="text-base font-semibold text-[#E6E9EF]">
                 Python 3.13 CLI
               </h2>
             </div>
           </div>
-          <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#3776AB]/20 text-[#FFD43B] border border-[#3776AB]/40">
+          <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#1B212A] text-[#A3ACBA] border border-[#2A323E]">
             pip install -e .
           </span>
         </div>
 
         {/* Command buttons */}
-        <div className="flex flex-wrap gap-1.5 p-1 bg-[#050414] rounded-xl border border-[#1A1637]">
+        <div className="flex flex-wrap gap-1 p-1 bg-[#10141B] rounded-lg border border-[#2A323E]">
           {(
             [
               { id: 'demo', label: 'demo' },
@@ -137,10 +135,10 @@ export const CliAndRepoView: React.FC<CliAndRepoViewProps> = ({
               key={cmd.id}
               type="button"
               onClick={() => setSelectedCmd(cmd.id)}
-              className={`px-3 py-1.5 text-xs font-mono rounded-lg transition-all duration-150 cursor-pointer ${
+              className={`px-2.5 py-1 text-xs font-mono rounded-md transition-colors cursor-pointer ${
                 selectedCmd === cmd.id
-                  ? 'bg-[#6331FB] text-[#FFFFFF] font-bold shadow-sm'
-                  : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
+                  ? 'bg-[#8DA2FF] text-[#0F1217] font-semibold'
+                  : 'text-[#A3ACBA] hover:text-[#E6E9EF] hover:bg-[#1B212A]'
               }`}
             >
               signoff {cmd.label}
@@ -149,40 +147,40 @@ export const CliAndRepoView: React.FC<CliAndRepoViewProps> = ({
         </div>
 
         {/* Terminal emulator box */}
-        <div className="rounded-xl bg-[#050414] border border-[#1A1637] font-mono text-xs overflow-hidden shadow-inner">
-          {/* Terminal Window Header with Colored Dots */}
-          <div className="px-3 py-2 bg-[#0C0A20] border-b border-[#1A1637] flex items-center justify-between">
+        <div className="rounded-lg bg-[#0B0E13] border border-[#2A323E] font-mono text-xs overflow-hidden">
+          {/* Terminal Window Header with Subtle Dots */}
+          <div className="px-3 py-2 bg-[#151A21] border-b border-[#2A323E] flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#EF4444]" />
-              <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]" />
-              <span className="w-2.5 h-2.5 rounded-full bg-[#10B981]" />
-              <span className="ml-2 text-xs text-[#958DBF]">bash — 80x24</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#F2837A]/70" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#E8B04A]/70" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#6CC4A1]/70" />
+              <span className="ml-2 text-xs text-[#7F8A9B]">bash — 80x24</span>
             </div>
             <button
               type="button"
               onClick={() => handleCopyOutput(`$ ${activeOutput.commandLine}\n${activeOutput.stdout}`)}
-              className="text-[#958DBF] hover:text-[#F5F3FF] flex items-center gap-1 text-xs cursor-pointer"
+              className="text-[#7F8A9B] hover:text-[#E6E9EF] flex items-center gap-1.5 text-xs cursor-pointer transition-colors"
             >
               {copiedOutput ? (
                 <>
-                  <Check className="w-3 h-3 text-[#00F5A0]" />
-                  <span className="text-[#00F5A0]">Copied</span>
+                  <Check className="w-3.5 h-3.5 text-[#6CC4A1]" />
+                  <span className="text-[#6CC4A1]">Copied</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-3 h-3" />
+                  <Copy className="w-3.5 h-3.5" />
                   <span>Copy</span>
                 </>
               )}
             </button>
           </div>
 
-          <div className="p-4 space-y-2.5 overflow-x-auto max-h-[360px]">
-            <div className="text-[#00F5A0] font-bold flex items-center gap-1.5">
-              <span className="text-[#6331FB]">$</span>
+          <div className="p-4 space-y-2 overflow-x-auto max-h-[360px]">
+            <div className="text-[#E6E9EF] font-semibold flex items-center gap-1.5">
+              <span className="text-[#8DA2FF]">$</span>
               <span>{activeOutput.commandLine}</span>
             </div>
-            <pre className="whitespace-pre-wrap leading-relaxed text-[#F5F3FF] font-mono">
+            <pre className="whitespace-pre-wrap leading-relaxed text-[#A3ACBA] font-mono text-xs">
               {activeOutput.stdout}
             </pre>
           </div>
@@ -192,17 +190,15 @@ export const CliAndRepoView: React.FC<CliAndRepoViewProps> = ({
       {/* Right 7 Cols: Repo Files */}
       <section
         aria-label="Repository Files"
-        className="lg:col-span-7 bg-[#09081B] border border-[#201B42] rounded-2xl p-5 lg:p-6 shadow-xl space-y-5"
+        className="lg:col-span-7 bg-[#151A21] border border-[#2A323E] rounded-xl p-5 space-y-4 shadow-sm"
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1A1637]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#2A323E]">
           <div className="flex items-center gap-3">
-            <GitHubLogo className="w-6 h-6 text-[#F5F3FF] shrink-0" />
+            <GitHubLogo className="w-5 h-5 text-[#E6E9EF] shrink-0" />
             <div>
-              <div className="text-xs font-mono text-[#958DBF] uppercase tracking-wider">
-                Source Code
-              </div>
-              <h2 className="text-lg font-bold font-serif-display text-[#F5F3FF]">
-                `signoff-switch` Repository
+              <div className="text-xs text-[#7F8A9B]">Source code</div>
+              <h2 className="text-base font-semibold text-[#E6E9EF]">
+                signoff-switch repository
               </h2>
             </div>
           </div>
@@ -211,17 +207,17 @@ export const CliAndRepoView: React.FC<CliAndRepoViewProps> = ({
             <button
               type="button"
               onClick={() => handleCopyFile(selectedFile)}
-              className="px-3 py-1.5 text-xs font-semibold bg-[#6331FB] hover:bg-[#7243FC] text-[#FFFFFF] rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-1.5 text-xs font-medium bg-[#1B212A] hover:bg-[#232B36] text-[#E6E9EF] border border-[#2A323E] rounded-md flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               {copiedPath === selectedFile.path ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-[#00F5A0]" />
+                  <Check className="w-3.5 h-3.5 text-[#6CC4A1]" />
                   <span>Copied</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>Copy File</span>
+                  <Copy className="w-3.5 h-3.5 text-[#7F8A9B]" />
+                  <span>Copy file</span>
                 </>
               )}
             </button>
@@ -233,41 +229,41 @@ export const CliAndRepoView: React.FC<CliAndRepoViewProps> = ({
                   selectedFile.content
                 )
               }
-              className="px-3 py-1.5 text-xs font-bold bg-[#88F9C0] hover:bg-[#00F5A0] text-[#02010A] rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-1.5 text-xs font-medium bg-[#1B212A] hover:bg-[#232B36] text-[#E6E9EF] border border-[#2A323E] rounded-md flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-3.5 h-3.5 text-[#7F8A9B]" />
               <span>Download</span>
             </button>
           </div>
         </div>
 
         {/* File Tabs */}
-        <div className="flex flex-wrap gap-1.5 p-1 bg-[#050414] rounded-xl border border-[#1A1637]">
+        <div className="flex flex-wrap gap-1 p-1 bg-[#10141B] rounded-lg border border-[#2A323E]">
           {REPO_FILES.map((file) => (
             <button
               key={file.path}
               type="button"
               onClick={() => setSelectedFile(file)}
-              className={`px-2.5 py-1 text-xs font-mono rounded-lg transition-all duration-150 cursor-pointer flex items-center gap-1.5 ${
+              className={`px-2.5 py-1 text-xs font-mono rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
                 selectedFile.path === file.path
-                  ? 'bg-[#151139] border border-[#6331FB] text-[#88F9C0] font-semibold shadow-sm'
-                  : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
+                  ? 'bg-[#1B212A] border border-[#8DA2FF] text-[#E6E9EF] font-medium'
+                  : 'text-[#A3ACBA] hover:text-[#E6E9EF] hover:bg-[#151A21]'
               }`}
             >
-              <FileCode className="w-3 h-3 text-[#6331FB]" />
+              <FileCode className={`w-3.5 h-3.5 ${selectedFile.path === file.path ? 'text-[#8DA2FF]' : 'text-[#7F8A9B]'}`} />
               <span>{file.path}</span>
             </button>
           ))}
         </div>
 
         {/* Code Content Container */}
-        <div className="rounded-xl bg-[#050414] border border-[#1A1637] overflow-hidden">
-          <div className="px-3.5 py-2 bg-[#0C0A20] border-b border-[#1A1637] flex items-center justify-between text-xs font-mono text-[#958DBF]">
+        <div className="rounded-lg bg-[#0B0E13] border border-[#2A323E] overflow-hidden">
+          <div className="px-3.5 py-2 bg-[#151A21] border-b border-[#2A323E] flex items-center justify-between text-xs font-mono text-[#7F8A9B]">
             <span>{selectedFile.path}</span>
-            <span>{selectedFile.content.split('\n').length} lines</span>
+            <span className="tabular-nums">{selectedFile.content.split('\n').length} lines</span>
           </div>
           <div className="p-4 overflow-auto max-h-[460px]">
-            <pre className="font-mono text-xs leading-relaxed text-[#F5F3FF] whitespace-pre">
+            <pre className="font-mono text-xs leading-relaxed text-[#E6E9EF] whitespace-pre">
               {selectedFile.content}
             </pre>
           </div>

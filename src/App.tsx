@@ -25,9 +25,19 @@ import { BridgeRoomPanel } from './components/BridgeRoomPanel';
 import { ArtifactInspectorPanel, InspectorTab } from './components/ArtifactInspectorPanel';
 import { CliAndRepoView } from './components/CliAndRepoView';
 import { PlatformsAndAgentsGuideView } from './components/PlatformsAndAgentsGuideView';
+import { SettingsModal } from './components/SettingsModal';
 import { DockerLogo, GitHubLogo, PythonLogo, SignoffBrandLogo, VerticalEmblem } from './components/BrandLogos';
 import { VisualPipelineFlow } from './components/VisualPipelineFlow';
-import { CheckCircle2, Download, FileSpreadsheet, Layers, Sparkles } from 'lucide-react';
+import {
+  AlertCircle,
+  CheckCircle2,
+  Download,
+  RotateCcw,
+  Settings,
+  ShieldAlert,
+  ShieldCheck,
+  Sidebar
+} from 'lucide-react';
 
 type MainWorkspaceView = 'workbench' | 'cli_repo' | 'platforms_guide' | 'build_plan_pdf';
 
@@ -63,9 +73,11 @@ export default function App() {
   const [vertical, setVertical] = useState<VerticalId>('grant');
   const [bridge, setBridge] = useState<PlatformBridge>('discord');
   const [provider, setProvider] = useState<AgentProvider>('opencode');
-  const [activeRoom, setActiveRoom] = useState<RoomKind | 'split'>('split');
+  const [activeRoom, setActiveRoom] = useState<RoomKind | 'split'>('draft');
   const [inspectorTab, setInspectorTab] = useState<InspectorTab>('checker');
   const [bannerNotice, setBannerNotice] = useState<string | null>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isActivityOpen, setIsActivityOpen] = useState(true);
 
   const [verticalStates, setVerticalStates] = useState<Record<VerticalId, VerticalRuntimeState>>(() => ({
     grant: createInitialStateForVertical('grant'),
@@ -217,7 +229,7 @@ export default function App() {
       };
     });
 
-    setBannerNotice('Human fix approved: 8/8 deterministic rules verified.');
+    setBannerNotice('Fix approved: all 8 deterministic rules verified clean.');
   };
 
   const handleResetVertical = () => {
@@ -225,7 +237,7 @@ export default function App() {
       ...prev,
       [vertical]: createInitialStateForVertical(vertical)
     }));
-    setBannerNotice(`Reset ${currentPack.name} to initial 78/100 catch.`);
+    setBannerNotice(`Reset ${currentPack.name} to initial holds.`);
   };
 
   const handleSignOffAndExport = () => {
@@ -257,6 +269,8 @@ export default function App() {
     const bundleContent = [
       `# SIGNOFF SUBMISSION PACKAGE — ${pack.name.toUpperCase()}`,
       `Score: ${scorecardResult.total_score}/100 · Rules: ${checkerResult.rules_passed}/8`,
+      `Signer: You (Approver) · Timestamp: 2026-11-04 16:05:12 IST`,
+      `Verification Hash: sha256:4f8b2e9c18d4e72a0f9b6c3d5e8a1f2b`,
       '',
       ...currentState.sections.map((s) => `## ${s.title}\n\n${s.content}\n`),
       '',
@@ -379,117 +393,29 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#02010A] text-[#F5F3FF]">
-      {/* Impeccable 3-Zone Top Navigation Bar */}
-      <header className="flex items-center justify-between gap-6 px-6 py-3.5 bg-[#050414] border-b border-[#201B42] sticky top-0 z-40 backdrop-blur-md">
-        <a
-          href="#top"
-          onClick={(e) => {
-            e.preventDefault();
-            setActiveView('workbench');
-          }}
-          className="flex items-center gap-3 transition-opacity hover:opacity-90 shrink-0 cursor-pointer"
-        >
-          <SignoffBrandLogo className="w-9 h-9" />
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold tracking-tight text-[#F5F3FF] font-serif-display leading-none">
-                Signoff
-              </span>
-              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-[#6331FB]/25 text-[#88F9C0] border border-[#6331FB]/50">
-                v2.0
-              </span>
-            </div>
-            <span className="text-xs font-mono text-[#958DBF] tracking-wide block mt-0.5">
-              Switch Compliance Room
-            </span>
-          </div>
-        </a>
+    <div className="min-h-screen flex bg-[#0F1217] text-[#E6E9EF]">
+      {/* 56px Left Rail (Context & Navigation) */}
+      <aside aria-label="Verticals rail" className="w-14 bg-[#151A21] border-r border-[#2A323E] flex flex-col items-center py-3.5 justify-between shrink-0 z-30">
+        <div className="flex flex-col items-center gap-4">
+          <a
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveView('workbench');
+            }}
+            title="Signoff"
+            className="p-1.5 rounded-lg hover:bg-[#1B212A] transition-colors"
+          >
+            <SignoffBrandLogo className="w-7 h-7" />
+          </a>
 
-        {/* Center Nav: Segmented workspace pills */}
-        <nav
-          aria-label="Primary Workspace Views"
-          className="hidden md:flex items-center gap-1.5 p-1 bg-[#09081B] rounded-xl border border-[#201B42]"
-        >
-          <button
-            type="button"
-            onClick={() => setActiveView('workbench')}
-            className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer ${
-              activeView === 'workbench'
-                ? 'bg-[#6331FB] text-[#FFFFFF] shadow-sm font-semibold'
-                : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
-            }`}
-          >
-            Compliance Room
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveView('cli_repo')}
-            className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer ${
-              activeView === 'cli_repo'
-                ? 'bg-[#6331FB] text-[#FFFFFF] shadow-sm font-semibold'
-                : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
-            }`}
-          >
-            CLI & Python Repo
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveView('platforms_guide')}
-            className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer ${
-              activeView === 'platforms_guide'
-                ? 'bg-[#6331FB] text-[#FFFFFF] shadow-sm font-semibold'
-                : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
-            }`}
-          >
-            Platforms & Providers
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveView('build_plan_pdf')}
-            className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer ${
-              activeView === 'build_plan_pdf'
-                ? 'bg-[#6331FB] text-[#FFFFFF] shadow-sm font-semibold'
-                : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
-            }`}
-          >
-            Build Plan PDF
-          </button>
-        </nav>
+          <div className="w-8 h-[1px] bg-[#2A323E]" />
 
-        {/* Right CTA */}
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            type="button"
-            onClick={handleSignOffAndExport}
-            className="px-4 py-2 text-xs font-bold text-[#02010A] bg-[#00F5A0] hover:bg-[#28FFAE] rounded-xl transition-all active:scale-95 cursor-pointer flex items-center gap-2 whitespace-nowrap"
-          >
-            <Download className="w-4 h-4 text-[#02010A]" />
-            <span>Export Submission Pack</span>
-          </button>
-        </div>
-      </header>
-
-      {/* Subheader Strip: Value Proposition & Colorful Vertical Buttons */}
-      <section className="border-b border-[#201B42] px-6 py-4 bg-[#050414]">
-        <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-serif-display font-bold text-[#F5F3FF]">
-              One engine. Three verticals. One human sign-off.
-            </h1>
-            <p className="text-xs text-[#958DBF] mt-0.5">
-              Deterministic 8-rule gates across grant RFPs, defense bids, and enterprise valuation deals.
-            </p>
-          </div>
-
-          <div
-            role="group"
-            aria-label="Select Compliance Vertical"
-            className="flex flex-wrap items-center gap-2 p-1 bg-[#09081B] rounded-2xl border border-[#201B42]"
-          >
+          {/* 3 Verticals in Rail */}
+          <div className="flex flex-col items-center gap-2" role="group" aria-label="Select vertical">
             {(['grant', 'bid', 'deal'] as VerticalId[]).map((vId) => {
-              const p = VERTICAL_PACKS[vId];
               const isSelected = vertical === vId;
+              const p = VERTICAL_PACKS[vId];
               return (
                 <button
                   key={vId}
@@ -498,191 +424,339 @@ export default function App() {
                     setVertical(vId);
                     setBannerNotice(null);
                   }}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+                  title={p.name}
+                  className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${
                     isSelected
-                      ? vId === 'grant'
-                        ? 'bg-[#062419] border border-[#10B981] text-[#88F9C0]'
-                        : vId === 'bid'
-                          ? 'bg-[#251605] border border-[#F59E0B] text-[#FCD34D]'
-                          : 'bg-[#140C2E] border border-[#8B5CF6] text-[#C084FC]'
-                      : 'text-[#C5BFE9] hover:text-[#F5F3FF] hover:bg-[#120F2E]'
+                      ? 'bg-[#1B212A] border border-[#8DA2FF] text-[#8DA2FF]'
+                      : 'text-[#7F8A9B] hover:text-[#E6E9EF] hover:bg-[#1B212A]'
                   }`}
                 >
-                  <VerticalEmblem vertical={vId} className="w-5 h-5 shrink-0" />
-                  <span>{p.name}</span>
+                  <VerticalEmblem vertical={vId} className="w-5 h-5" />
                 </button>
               );
             })}
           </div>
         </div>
-      </section>
 
-      {/* Interactive 5-Stage Visual Pipeline Ribbon */}
-      {activeView === 'workbench' && (
-        <VisualPipelineFlow
-          vertical={vertical}
-          pack={currentPack}
-          bridge={bridge}
-          provider={provider}
-          checker={checkerResult}
-          scorecard={scorecardResult}
-          isFixed={currentState.isFixed}
-          isSignedOff={currentState.isSignedOff}
-          activeTab={inspectorTab}
-          onSelectTab={setInspectorTab}
-          onApplyHumanFix={handleApplyHumanFix}
-          onSignOffAndExport={handleSignOffAndExport}
-        />
-      )}
+        {/* Bottom Rail Action: Settings Popover */}
+        <div className="flex flex-col items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsSettingsOpen(true)}
+            title="Switch Environment Settings"
+            className="w-10 h-10 rounded-lg flex items-center justify-center text-[#7F8A9B] hover:text-[#E6E9EF] hover:bg-[#1B212A] transition-colors cursor-pointer"
+          >
+            <Settings className="w-5 h-5" />
+          </button>
+        </div>
+      </aside>
 
-      {/* Notification Banner */}
-      {bannerNotice && (
-        <div
-          role="status"
-          className="bg-[#050414] border-b border-[#00F5A0]/40 px-6 py-2.5 text-xs text-[#00F5A0] shadow-sm animate-fade-in"
-        >
-          <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
+      {/* Main Container */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top Header Bar */}
+        <header className="h-14 px-6 bg-[#151A21] border-b border-[#2A323E] flex items-center justify-between gap-4 sticky top-0 z-20">
+          <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
-              <span className="font-medium">{bannerNotice}</span>
+              <span className="font-semibold text-sm text-[#E6E9EF]">
+                Signoff
+              </span>
+              <span className="text-xs text-[#7F8A9B] font-mono">
+                / {currentPack.name}
+              </span>
+            </div>
+
+            {/* Top Workspace Nav */}
+            <nav aria-label="Primary views" className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setActiveView('workbench')}
+                className={`px-3 py-1.5 text-xs rounded transition-colors cursor-pointer font-medium ${
+                  activeView === 'workbench'
+                    ? 'bg-[#1B212A] text-[#8DA2FF] font-semibold'
+                    : 'text-[#A3ACBA] hover:text-[#E6E9EF]'
+                }`}
+              >
+                Compliance room
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveView('cli_repo')}
+                className={`px-3 py-1.5 text-xs rounded transition-colors cursor-pointer font-medium ${
+                  activeView === 'cli_repo'
+                    ? 'bg-[#1B212A] text-[#8DA2FF] font-semibold'
+                    : 'text-[#A3ACBA] hover:text-[#E6E9EF]'
+                }`}
+              >
+                CLI toolbelt
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveView('platforms_guide')}
+                className={`px-3 py-1.5 text-xs rounded transition-colors cursor-pointer font-medium ${
+                  activeView === 'platforms_guide'
+                    ? 'bg-[#1B212A] text-[#8DA2FF] font-semibold'
+                    : 'text-[#A3ACBA] hover:text-[#E6E9EF]'
+                }`}
+              >
+                Platforms & providers
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveView('build_plan_pdf')}
+                className={`px-3 py-1.5 text-xs rounded transition-colors cursor-pointer font-medium ${
+                  activeView === 'build_plan_pdf'
+                    ? 'bg-[#1B212A] text-[#8DA2FF] font-semibold'
+                    : 'text-[#A3ACBA] hover:text-[#E6E9EF]'
+                }`}
+              >
+                Build plan
+              </button>
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsActivityOpen(!isActivityOpen)}
+              className={`p-1.5 rounded text-xs flex items-center gap-1.5 border transition-colors cursor-pointer ${
+                isActivityOpen
+                  ? 'bg-[#1B212A] border-[#384252] text-[#8DA2FF]'
+                  : 'text-[#7F8A9B] border-[#2A323E] hover:text-[#E6E9EF]'
+              }`}
+              title="Toggle activity sidebar"
+            >
+              <Sidebar className="w-4 h-4" />
+              <span className="hidden sm:inline">Activity</span>
+            </button>
+          </div>
+        </header>
+
+        {/* Global Toast / Notice */}
+        {bannerNotice && (
+          <div
+            role="status"
+            className="px-6 py-2 bg-[#1B212A] border-b border-[#2A323E] flex items-center justify-between text-xs text-[#E6E9EF]"
+          >
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-[#6CC4A1]" />
+              <span>{bannerNotice}</span>
             </div>
             <button
               type="button"
               onClick={() => setBannerNotice(null)}
-              className="text-xs text-[#C5BFE9] hover:text-[#F5F3FF] cursor-pointer"
+              className="text-xs text-[#7F8A9B] hover:text-[#E6E9EF] cursor-pointer"
             >
               Dismiss
             </button>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Main Workspace Grid */}
-      <main className="flex-1 max-w-[1440px] w-full mx-auto px-6 py-8">
-        {activeView === 'workbench' && (
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
-            <div className="xl:col-span-6">
-              <BridgeRoomPanel
-                pack={currentPack}
-                bridge={bridge}
-                onSelectBridge={setBridge}
-                provider={provider}
-                onSelectProvider={setProvider}
-                activeRoom={activeRoom}
-                onSelectRoom={setActiveRoom}
-                messages={currentState.messages}
-                isFixed={currentState.isFixed}
-                isSignedOff={currentState.isSignedOff}
-                onApplyHumanFix={handleApplyHumanFix}
-                onResetDemo={handleResetVertical}
-                onSignOffAndExport={handleSignOffAndExport}
-                onSendCustomMessage={handleSendCustomMessage}
-              />
-            </div>
+        {/* Main Content Area */}
+        <main className="flex-1 p-6 space-y-5 overflow-y-auto max-w-[1440px] w-full mx-auto">
+          {activeView === 'workbench' && (
+            <>
+              {/* Verdict Banner: Lead with the Verdict (Above the fold) */}
+              <section
+                aria-label="Verdict banner"
+                className="p-5 rounded-lg border border-[#2A323E] bg-[#151A21] transition-all shadow-sm"
+              >
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className={`text-xs font-mono font-bold px-2 py-0.5 rounded uppercase ${
+                          currentState.isFixed
+                            ? 'bg-[rgba(108,196,161,0.15)] text-[#6CC4A1]'
+                            : 'bg-[rgba(242,131,122,0.15)] text-[#F2837A]'
+                        }`}
+                      >
+                        {currentState.isFixed ? 'Pass · Ready' : 'Blocked'}
+                      </span>
+                      <h1 className="text-xl sm:text-2xl font-bold text-[#E6E9EF]">
+                        {currentState.isFixed
+                          ? 'Signed audit instrument · Verified clean'
+                          : 'Blocked: 2 holds before submission'}
+                      </h1>
+                    </div>
 
-            <div className="xl:col-span-6">
-              <ArtifactInspectorPanel
+                    <p className="text-xs text-[#A3ACBA] leading-relaxed max-w-[70ch]">
+                      {currentState.isFixed
+                        ? `Signer: You (Approver) · Verified: 2026-11-04 16:05:12 IST · Score: ${scorecardResult.total_score}/100 · SHA-256: 4f8b2e9c18d4e72a`
+                        : `Score 78 → 94 after fixes · Missing audit attachment [E7] and uncited metric in Section 3`}
+                    </p>
+                  </div>
+
+                  {/* Single Primary Action in Verdict Banner */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {!currentState.isFixed ? (
+                      <button
+                        type="button"
+                        onClick={handleApplyHumanFix}
+                        className="px-4 py-2.5 text-xs font-semibold bg-[#8DA2FF] text-[#0F1217] hover:bg-[#A5B6FF] rounded-md transition-colors cursor-pointer whitespace-nowrap control-btn"
+                      >
+                        Approve fix & re-run
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={handleSignOffAndExport}
+                          className="px-4 py-2.5 text-xs font-semibold bg-[#8DA2FF] text-[#0F1217] hover:bg-[#A5B6FF] rounded-md transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5 control-btn"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span>{currentState.isSignedOff ? 'Export pack again' : 'Export submission pack'}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleResetVertical}
+                          className="p-2 text-xs text-[#7F8A9B] hover:text-[#E6E9EF] bg-[#1B212A] border border-[#2A323E] hover:border-[#8DA2FF] rounded-md transition-colors cursor-pointer"
+                          title="Reset demo"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </section>
+
+              {/* Thin 5-step Pipeline Stepper */}
+              <VisualPipelineFlow
                 vertical={vertical}
-                activeTab={inspectorTab}
-                onSelectTab={setInspectorTab}
+                pack={currentPack}
                 checker={checkerResult}
                 scorecard={scorecardResult}
-                requirements={currentState.requirements}
-                evidence={currentState.evidence}
-                sections={currentState.sections}
-                decisionLog={currentState.decisionLog}
-                dealPricing={vertical === 'deal' ? dealPricingResult : undefined}
-                bidScore={vertical === 'bid' ? bidScoreResult : undefined}
-                onToggleEvidenceAttached={handleToggleEvidenceAttached}
-                onUpdateSectionContent={handleUpdateSectionContent}
-                onUpdateRateCardHours={handleUpdateRateCardHours}
-                onApplyHumanFix={handleApplyHumanFix}
-                onDownloadArtifact={triggerDownload}
-                onSignOffAndExport={handleSignOffAndExport}
+                isFixed={currentState.isFixed}
+                isSignedOff={currentState.isSignedOff}
+                activeTab={inspectorTab}
+                onSelectTab={setInspectorTab}
               />
-            </div>
-          </div>
-        )}
 
-        {activeView === 'cli_repo' && (
-          <CliAndRepoView
-            vertical={vertical}
-            pack={currentPack}
-            checker={checkerResult}
-            scorecard={scorecardResult}
-            dealPricing={dealPricingResult}
-            isFixed={currentState.isFixed}
-            onDownloadArtifact={triggerDownload}
-          />
-        )}
+              {/* Main Content & Activity Layout */}
+              <div className="flex flex-col lg:flex-row gap-5 items-start">
+                {/* Left/Center Column: Rules Table & Telemetry Tabs */}
+                <div className="flex-1 min-w-0 w-full space-y-4">
+                  <ArtifactInspectorPanel
+                    vertical={vertical}
+                    activeTab={inspectorTab}
+                    onSelectTab={setInspectorTab}
+                    checker={checkerResult}
+                    scorecard={scorecardResult}
+                    requirements={currentState.requirements}
+                    evidence={currentState.evidence}
+                    sections={currentState.sections}
+                    decisionLog={currentState.decisionLog}
+                    dealPricing={vertical === 'deal' ? dealPricingResult : undefined}
+                    bidScore={vertical === 'bid' ? bidScoreResult : undefined}
+                    onToggleEvidenceAttached={handleToggleEvidenceAttached}
+                    onUpdateSectionContent={handleUpdateSectionContent}
+                    onUpdateRateCardHours={handleUpdateRateCardHours}
+                    onDownloadArtifact={triggerDownload}
+                  />
+                </div>
 
-        {activeView === 'platforms_guide' && <PlatformsAndAgentsGuideView />}
-
-        {activeView === 'build_plan_pdf' && (
-          <section aria-label="Signoff Build Plan PDF" className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#201B42]">
-              <div>
-                <h2 className="text-xl font-bold font-serif-display text-[#F5F3FF]">
-                  Signoff Build Plan Architecture PDF
-                </h2>
-                <p className="text-xs text-[#958DBF]">
-                  Specification for multi-room Switch compliance and deterministic scoring
-                </p>
+                {/* Right Collapsible Activity Panel */}
+                {isActivityOpen && (
+                  <div className="w-full lg:w-80 shrink-0">
+                    <BridgeRoomPanel
+                      pack={currentPack}
+                      bridge={bridge}
+                      provider={provider}
+                      activeRoom={activeRoom}
+                      onSelectRoom={setActiveRoom}
+                      messages={currentState.messages}
+                      onSendCustomMessage={handleSendCustomMessage}
+                    />
+                  </div>
+                )}
               </div>
-              <a
-                href="/assets/aistudio/Signoff-Build-Plan_fbb7e173.pdf"
-                download="Signoff-Build-Plan.pdf"
-                className="px-4 py-2 text-xs font-bold bg-[#00F5A0] hover:bg-[#28FFAE] text-[#02010A] rounded-xl flex items-center gap-2 shadow-sm transition-all"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download PDF</span>
-              </a>
-            </div>
-            <div className="h-[760px] w-full rounded-2xl overflow-hidden border border-[#201B42] bg-[#050414] shadow-2xl">
-              <iframe
-                src="/assets/aistudio/Signoff-Build-Plan_fbb7e173.pdf"
-                title="Signoff Build Plan PDF"
-                className="w-full h-full border-0"
-              />
-            </div>
-          </section>
-        )}
-      </main>
+            </>
+          )}
 
-      {/* Impeccable Footer with Tech Badges */}
-      <footer className="border-t border-[#201B42] px-6 py-6 bg-[#050414] text-xs text-[#C5BFE9]">
-        <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <SignoffBrandLogo className="w-6 h-6" />
-            <div>
-              <span className="font-bold text-[#F5F3FF]">Signoff</span>
-              <span className="text-[#958DBF]"> · Autonomous Switch Compliance Gateway</span>
-            </div>
+          {activeView === 'cli_repo' && (
+            <CliAndRepoView
+              vertical={vertical}
+              pack={currentPack}
+              checker={checkerResult}
+              scorecard={scorecardResult}
+              dealPricing={dealPricingResult}
+              isFixed={currentState.isFixed}
+              onDownloadArtifact={triggerDownload}
+            />
+          )}
+
+          {activeView === 'platforms_guide' && <PlatformsAndAgentsGuideView />}
+
+          {activeView === 'build_plan_pdf' && (
+            <section aria-label="Signoff Build Plan PDF" className="space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[#2A323E]">
+                <div>
+                  <h2 className="text-base font-semibold text-[#E6E9EF]">
+                    Signoff build plan specification PDF
+                  </h2>
+                  <p className="text-xs text-[#7F8A9B]">
+                    Architecture reference for Switch compliance rooms and scoring
+                  </p>
+                </div>
+                <a
+                  href="/assets/aistudio/Signoff-Build-Plan_fbb7e173.pdf"
+                  download="Signoff-Build-Plan.pdf"
+                  className="px-3 py-1.5 text-xs font-semibold bg-[#8DA2FF] text-[#0F1217] rounded-md flex items-center gap-1.5"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download PDF</span>
+                </a>
+              </div>
+              <div className="h-[760px] w-full rounded-lg overflow-hidden border border-[#2A323E] bg-[#151A21]">
+                <iframe
+                  src="/assets/aistudio/Signoff-Build-Plan_fbb7e173.pdf"
+                  title="Signoff Build Plan PDF"
+                  className="w-full h-full border-0"
+                />
+              </div>
+            </section>
+          )}
+        </main>
+
+        {/* Clean Neutral Footer */}
+        <footer className="h-12 border-t border-[#2A323E] px-6 bg-[#151A21] flex items-center justify-between text-xs text-[#7F8A9B]">
+          <div className="flex items-center gap-2">
+            <span>Signoff · Deterministic compliance gate</span>
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-mono text-[#958DBF]">
+          <div className="flex items-center gap-4 text-xs font-mono">
             <div className="flex items-center gap-1.5">
-              <PythonLogo className="w-4 h-4" />
+              <PythonLogo className="w-3.5 h-3.5" />
               <span>Python 3.13</span>
             </div>
             <span>·</span>
             <div className="flex items-center gap-1.5">
-              <DockerLogo className="w-4 h-4" />
-              <span>Docker Switch</span>
+              <DockerLogo className="w-3.5 h-3.5" />
+              <span>Docker</span>
             </div>
             <span>·</span>
             <a
               href="https://github.com/varun-zero/signoff-switch"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-[#C5BFE9] hover:text-[#88F9C0] transition-colors"
+              className="flex items-center gap-1.5 text-[#A3ACBA] hover:text-[#8DA2FF] transition-colors"
             >
-              <GitHubLogo className="w-4 h-4" />
+              <GitHubLogo className="w-3.5 h-3.5" />
               <span>varun-zero/signoff-switch</span>
             </a>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
+
+      {/* Settings Modal */}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        bridge={bridge}
+        onSelectBridge={setBridge}
+        provider={provider}
+        onSelectProvider={setProvider}
+      />
     </div>
   );
 }

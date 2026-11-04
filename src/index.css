@@ -2,104 +2,153 @@
 
 @layer base {
   :root {
-    --font-display: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-sans: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    
-    /* Impeccable Semantic Color Tokens */
-    --canvas: #02010A;
-    --surface-1: #09081B;
-    --surface-2: #110F2B;
-    --surface-3: #19163F;
-    --border-subtle: #201B42;
-    --border-strong: #2F295E;
-    
-    --text-primary: #F5F3FF;
-    --text-secondary: #C5BFE9;
-    --text-muted: #958DBF;
-    
-    --accent-indigo: #6331FB;
-    --accent-indigo-hover: #7546FD;
-    --accent-mint: #88F9C0;
-    --accent-mint-bright: #00F5A0;
-    --accent-amber: #F59E0B;
-    --accent-coral: #EF4444;
+    color-scheme: dark;
+    --radius: 0.625rem;
+
+    /* Fonts */
+    --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    /* Surfaces: lighter = higher elevation */
+    --bg: #0F1217;
+    --surface-1: #151A21;
+    --surface-2: #1B212A;
+    --surface-3: #232A35;
+    --line: #2A323E;
+    --line-strong: #384252;
+
+    /* Text hierarchy: measured contrast on surface-1: 14:1 / 7.6:1 / 5:1 */
+    --text: #E6E9EF;
+    --text-2: #A3ACBA;
+    --text-3: #7F8A9B;
+
+    /* Brand: ink blue (primary action & selection ONLY) */
+    --ink: #8DA2FF;
+    --ink-hover: #A5B6FF;
+    --ink-bg: rgba(141, 162, 255, 0.12);
+    --on-ink: #0F1217;
+
+    /* Status: semantic only, never decorative */
+    --pass: #6CC4A1;
+    --hold: #E8B04A;
+    --fail: #F2837A;
+    --pass-bg: rgba(108, 196, 161, 0.10);
+    --hold-bg: rgba(232, 176, 74, 0.12);
+    --fail-bg: rgba(242, 131, 122, 0.12);
+
+    /* Radius hierarchy */
+    --r-control: 6px;
+    --r-panel: 10px;
+
+    /* shadcn / Tailwind token aliases */
+    --background: var(--bg);
+    --foreground: var(--text);
+    --card: var(--surface-1);
+    --card-foreground: var(--text);
+    --popover: var(--surface-2);
+    --popover-foreground: var(--text);
+    --border: var(--line);
+    --input: var(--text-3);
+    --ring: var(--ink);
+    --primary: var(--ink);
+    --primary-foreground: var(--on-ink);
   }
 
   * {
-    border-color: var(--border-subtle);
+    border-color: var(--line);
   }
 
   body {
     font-family: var(--font-sans);
-    font-size: 15px;
-    line-height: 1.55;
-    color: var(--text-primary);
-    background-color: var(--canvas);
-    caret-color: var(--accent-mint-bright);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    background-color: var(--bg);
+    caret-color: var(--ink);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Headings: Tight tracking, balanced wrap, deliberate visual hierarchy */
-  h1, h2, h3, h4, .font-serif-display {
-    font-family: var(--font-display);
+  h1, h2, h3, h4 {
+    font-family: var(--font-sans);
     text-wrap: balance;
-    letter-spacing: -0.025em;
-    color: var(--text-primary);
+    letter-spacing: -0.015em;
+    color: var(--text);
+    font-weight: 600;
   }
 
   h1 {
-    letter-spacing: -0.035em;
+    font-size: 28px;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
   }
 
   p {
     text-wrap: pretty;
   }
 
-  /* Code & Tabular Numerals */
-  code, pre, .font-mono-tabular {
+  code, pre, .font-mono, .num {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
   }
 
-  /* Theme browser surfaces per Impeccable craft floor */
   ::selection {
-    background-color: var(--accent-mint);
-    color: #01010D;
+    background-color: var(--ink);
+    color: var(--on-ink);
   }
 
   *:focus-visible {
-    outline: 2px solid var(--accent-mint);
+    outline: 2px solid var(--ink);
     outline-offset: 2px;
   }
 
-  /* Custom Impeccable Scrollbars */
+  /* Sleek, unobtrusive scrollbars */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #060515;
+    background: var(--bg);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #251F49;
-    border-radius: 4px;
-    border: 2px solid #060515;
+    background: var(--line-strong);
+    border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #41377C;
+    background: var(--text-3);
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: #251F49 #060515;
+    scrollbar-color: var(--line-strong) var(--bg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
   }
 }
 
-.tabular-nums {
+.num {
   font-variant-numeric: tabular-nums;
+}
+
+.surface {
+  background: var(--surface-1);
+  border-radius: var(--r-panel);
+  box-shadow: 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.control-btn {
+  border-radius: var(--r-control);
+  transition: all 120ms ease;
+}
+
+.control-btn:active {
+  transform: scale(0.96);
 }
