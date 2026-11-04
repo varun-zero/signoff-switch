@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "signoff-switch"
+version = "1.0.0"
+description = "Switch-native compliance room toolbelt: deterministic citation, word-limit, attachment, and rubric checker."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+  "typer>=0.12.0",
+  "rich>=13.7.0",
+  "python-docx>=1.1.0"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0"]
+
+[project.scripts]
+signoff = "signoff.cli:app"

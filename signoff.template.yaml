@@ -1,0 +1,89 @@
+version: 1
+params:
+  vertical: { type: enum, enum: [grant, bid, deal], default: grant }
+  bridge:   { type: bridge, default: [Discord, Slack, Teams, Telegram, $first] }
+  provider: { type: provider, default: [opencode, antigravity, claude, codex] }
+  workspace: { type: directory, default: "{$agents_dir}/signoff" }
+  client:   { type: user, label: Client username }
+
+group:
+  name: "Signoff {vertical} — {client}"
+
+  agents:
+    - name: signoff-analyst
+      display_name: Signoff Analyst
+      description: Turns requirements into a compliance matrix and flags disqualifiers.
+      provider: "{provider}"
+      location: local
+      directory: "{workspace}"
+      addressing: anyone
+      allow_existing: true
+      instructions: |
+        The room instructions name the vertical. Read
+        verticals/<vertical>/README.md, the source document and the evidence index.
+        Produce out/<vertical>/requirements.json, then run `signoff matrix`.
+        Flag every disqualifier and missing attachment before drafting starts.
+        Do not write prose. Hand off in the draft room, addressing
+        @signoff-drafter with the matrix and evidence IDs repeated in full.
+
+    - name: signoff-drafter
+      display_name: Signoff Drafter
+      description: Writes the response with evidence citations and explicit gaps.
+      provider: "{provider}"
+      location: local
+      directory: "{workspace}"
+      addressing: owner-agents
+      allow_existing: true
+      instructions: |
+        You are the Signoff drafter. Use only evidence in the evidence index.
+        Cite every factual claim as [E#]. If evidence is missing, write [GAP: ...].
+        Respect every word limit. Run `signoff check` after each section.
+        When the draft is ready, post one line addressed to the approver.
+        Do not address the reviewer; only the approver can wake it.
+
+    - name: signoff-reviewer
+      display_name: Signoff Reviewer
+      description: Scores the draft against the rubric and red-teams it.
+      provider: "{provider}"
+      location: local
+      directory: "{workspace}"
+      addressing: owner
+      allow_existing: true
+      instructions: |
+        You are the Signoff reviewer, woken by the approver. Read the draft
+        room history and the draft file. Run `signoff check` and `signoff score`.
+        Score every rubric criterion. Find unsupported claims, missing requirements
+        and weak answers. Do not edit the draft. Report to the approver only.
+
+  rooms:
+    - name: "{vertical}-intake"
+      bridge: "{bridge}"
+      channel_type: channel_private
+      instructions: |
+        This room turns a source document into a compliance matrix.
+        The client talks to the analyst. The analyst owns the matrix.
+        Do not draft the response here. Hand off to the draft room.
+      agents: [signoff-analyst]
+      users: ["{$creator}", "{client}"]
+      kickoff: |
+        @signoff-analyst introduce yourself in two lines and tell the client
+        what you need to start.
+
+    - name: "{vertical}-draft"
+      bridge: "{bridge}"
+      channel_type: channel_private
+      instructions: |
+        This room drafts and reviews the response. The drafter owns the draft.
+        The reviewer scores it. The approver makes the final call. Only the
+        approver wakes the reviewer; no agent approves its own work.
+      agents: [signoff-analyst, signoff-drafter, signoff-reviewer]
+      users: ["{$creator}"]
+      kickoff: |
+        @signoff-drafter @signoff-reviewer this is the draft room. Drafter, say
+        hello and describe what you will produce. Reviewer, say hello and describe
+        what you will check. Wait for the analyst's handoff.
+
+  links:
+    - from: "{vertical}-intake"
+      to: "{vertical}-draft"
+      label: "requirements handoff"
